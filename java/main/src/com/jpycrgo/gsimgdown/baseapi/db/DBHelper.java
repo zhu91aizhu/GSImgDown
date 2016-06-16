@@ -14,7 +14,7 @@ import java.sql.SQLException;
 /**
  * @author mengzx
  * @date 2016/5/13
- * @since 1.0.0
+ * @since 1.0.1
  */
 public class DBHelper {
 
@@ -24,6 +24,26 @@ public class DBHelper {
         DbUtils.loadDriver("org.sqlite.JDBC");
     }
 
+    public static boolean insertRecord(Connection conn, AbstractRecord record) {
+        QueryRunner runner = new QueryRunner();
+        String sql = record.generateSQL();
+        Object[] params = record.getParams();
+        int affectCount = 0;
+
+        try {
+            affectCount = runner.update(conn, sql, params);
+        }
+        catch (SQLException e) {
+            logger.error(String.format("插入%s失败，message： %s", record.getRecordName(), e.getMessage()));
+        }
+
+        return affectCount > 0 ? true : false;
+    }
+
+    /**
+     * @since 1.0.0
+     */
+    @Deprecated
     public static boolean insertRecord(Connection conn, ImageBean bean) {
         QueryRunner runner = new QueryRunner();
         String sql = "INSERT INTO IMAGE(sid, URL) VALUES(?, ?)";
@@ -42,6 +62,10 @@ public class DBHelper {
         return affectCount > 0 ? true : false;
     }
 
+    /**
+     * @since 1.0.0
+     */
+    @Deprecated
     public static boolean insertRecord(Connection conn, ImageThemeBean bean) {
         QueryRunner runner = new QueryRunner();
         String sql = "INSERT INTO IMAGE_THEME(TITLE, DESCRIPTION, URL, SID) VALUES(?, ?, ?, ?)";

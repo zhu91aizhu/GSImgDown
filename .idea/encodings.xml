@@ -6,7 +6,8 @@
     <file url="file://$PROJECT_DIR$/java/main/src/com/jpycrgo/gsimgdown/Main.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/java/main/src/com/jpycrgo/gsimgdown/baseapi/db/DBHelper.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/java/main/src/com/jpycrgo/gsimgdown/baseapi/db/DBThreadManager.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/java/main/src/com/jpycrgo/gsimgdown/baseapi/db/ImageThemeDBThread.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/java/main/src/com/jpycrgo/gsimgdown/baseapi/db/ImageThemeBeanRecord.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/java/main/src/com/jpycrgo/gsimgdown/baseapi/db/RecordDBThread.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/java/main/src/com/jpycrgo/gsimgdown/baseapi/db/handler/ImageThemeResultSetHandler.java" charset="UTF-8" />
   </component>
 </project>

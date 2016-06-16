@@ -2,6 +2,7 @@ package com.jpycrgo.gsimgdown;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.CharStreams;
+import com.jpycrgo.gsimgdown.baseapi.db.DBThreadManager;
 import com.jpycrgo.gsimgdown.bean.ImageThemeBean;
 import com.jpycrgo.gsimgdown.bean.JsonParamBean;
 import com.jpycrgo.gsimgdown.utils.DocumentUtils;
@@ -32,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author mengzx
  * @date 2016/4/27
- * @since 1.0.0
+ * @since 1.0.1
  */
 public class Main {
 
@@ -90,12 +91,14 @@ public class Main {
                 String sid = pls.attr("data-sid");
 
                 ImageThemeBean imageThemeSetBean = new ImageThemeBean(title, description, url, sid);
-                logger.info(String.format("add %s [%s]", title, url));
+                logger.info(String.format("添加图片主题 [%s - %s]", title, url));
                 imageThemeSetBeans.add(imageThemeSetBean);
             }
         }
 
         ImageDownloader.leftImageThemeCount = new AtomicInteger(imageThemeSetBeans.size());
+
+        DBThreadManager.activateRecordThread();
 
         ImageDownloadTask thread = new ImageDownloadTask(imageThemeSetBeans, PropertiesUtils.getProperty("save_img_path"));
         Thread[] threads = new Thread[4];
@@ -109,7 +112,10 @@ public class Main {
             threads[i].join();
         }
 
-        logger.error("任务执行完成，程序正在退出.");
+        DBThreadManager.interruptRecordThread();
+        DBThreadManager.joinRecordThread();
+
+        logger.info("任务执行完成，程序正在退出.");
         System.exit(0);
     }
 

@@ -1,6 +1,9 @@
 package com.jpycrgo.gsimgdown;
 
+import com.jpycrgo.gsimgdown.baseapi.db.AbstractRecord;
 import com.jpycrgo.gsimgdown.baseapi.db.DBThreadManager;
+import com.jpycrgo.gsimgdown.baseapi.db.ImageBeanRecord;
+import com.jpycrgo.gsimgdown.bean.ImageBean;
 import com.jpycrgo.gsimgdown.utils.HttpClientUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author mengzx
  * @date 2016/4/29
- * @since 1.0.0
+ * @since 1.0.1
  */
 public class ImageDownloader {
 
@@ -48,8 +51,6 @@ public class ImageDownloader {
         int size = imageurls.size();
         for (int i=0; i<size; i++) {
             String url = imageurls.get(i);
-            logger.info(String.format("download imgae url[%s].[index/total: %d/%d]", url, i, size));
-
             int pos = url.lastIndexOf("/");
             String filename;
             if (path.endsWith(File.separator)) {
@@ -88,7 +89,10 @@ public class ImageDownloader {
                 }
 
                 httpGet.abort();
-                DBThreadManager.saveImage(sid, url);
+
+                ImageBean imageBean = new ImageBean(sid, url);
+                AbstractRecord record = new ImageBeanRecord(imageBean);
+                DBThreadManager.saveRecord(record);
             }
             catch (IOException e) {
                 logger.error(String.format("download image[%s] failure.%s[%s]",
@@ -97,7 +101,7 @@ public class ImageDownloader {
                 continue;
             }
 
-            logger.info(String.format("download image[%s] success.[index/total: %d/%d]", url, i+1, size));
+            logger.info(String.format("下载图片 [%s] success.[index/total: %d/%d]", url, i+1, size));
         }
 
     }
