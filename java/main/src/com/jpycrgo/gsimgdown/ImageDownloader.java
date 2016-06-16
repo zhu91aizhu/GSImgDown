@@ -60,6 +60,12 @@ public class ImageDownloader {
                 filename = path + File.separator + url.substring(pos + 1);
             }
 
+            File imgFile = new File(filename);
+            if (imgFile.exists()) {
+                logger.info(String.format("图片 [%s] 已存在，不进行下载.", imgFile.getName()));
+                continue;
+            }
+
             // 创建Get方法实例
             HttpGet httpGet = null;
             try {
@@ -67,7 +73,7 @@ public class ImageDownloader {
                 httpGet.setConfig(HttpClientUtils.getProxyRequestConfig());
             }
             catch (Exception e) {
-                logger.error(String.format("url error: [%s]%s[%s]",
+                logger.error(String.format("url 错误: [%s]%s[%s]",
                         url, System.getProperty("line.separator"), e.getMessage()));
                 continue;
             }
@@ -79,7 +85,7 @@ public class ImageDownloader {
                 httpResponse = httpclient.execute(httpGet);
                 HttpEntity entity = httpResponse.getEntity();
                 if (entity == null) {
-                    throw new RuntimeException("request is failure.");
+                    throw new RuntimeException("请求失败.");
                 }
 
                 try (InputStream is = entity.getContent();
@@ -95,13 +101,13 @@ public class ImageDownloader {
                 DBThreadManager.saveRecord(record);
             }
             catch (IOException e) {
-                logger.error(String.format("download image[%s] failure.%s[%s]",
+                logger.error(String.format("下载图片 [%s] 失败.%s[%s]",
                         url, System.getProperty("line.separator"), e.getMessage()));
                 e.printStackTrace();
                 continue;
             }
 
-            logger.info(String.format("下载图片 [%s] success.[index/total: %d/%d]", url, i+1, size));
+            logger.info(String.format("下载图片 [%s] 成功.[当前/全部: %d/%d]", url, i+1, size));
         }
 
     }
