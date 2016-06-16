@@ -1,0 +1,52 @@
+<assembly>
+    <id>bin</id>
+
+    <formats>
+        <format>zip</format>
+    </formats>
+
+    <dependencySets>
+        <dependencySet>
+            <useProjectArtifact>true</useProjectArtifact>
+            <outputDirectory>lib</outputDirectory>
+        </dependencySet>
+    </dependencySets>
+
+    <fileSets>
+        <!-- 程序说明文档 -->
+        <fileSet>
+            <directory>${basedir}</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>README.txt</include>
+            </includes>
+        </fileSet>
+        <!-- 程序启动脚本 -->
+        <fileSet>
+            <directory>${basedir}/scripts</directory>
+            <outputDirectory>bin</outputDirectory>
+            <includes>
+                <include>start.sh</include>
+                <include>addclasspath.bat</include>
+                <include>start.bat</include>
+            </includes>
+        </fileSet>
+        <!-- 程序配置文件 -->
+        <fileSet>
+            <directory>${basedir}/conf</directory>
+            <outputDirectory>conf</outputDirectory>
+            <includes>
+                <include>app.properties</include>
+                <include>log4j.xml</include>
+            </includes>
+        </fileSet>
+        <!-- 数据库文件 -->
+        <fileSet>
+            <directory>${basedir}/db</directory>
+            <outputDirectory>db</outputDirectory>
+            <includes>
+                <include>app.db</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+</assembly>
