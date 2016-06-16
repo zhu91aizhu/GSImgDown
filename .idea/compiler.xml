@@ -24,9 +24,17 @@
         <processorPath useClasspath="true" />
         <module name="GSImgDonwn" />
       </profile>
+      <profile default="false" name="Annotation profile for GSImgDown" enabled="true">
+        <sourceOutputDir name="target\generated-sources\annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="GSImgDown" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="GSImgDonwn" target="1.8" />
+      <module name="GSImgDown" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

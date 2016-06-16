@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/GSImgDonwn.iml" filepath="$PROJECT_DIR$/GSImgDonwn.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GSImgDown.iml" filepath="$PROJECT_DIR$/GSImgDown.iml" />
     </modules>
   </component>
 </project>
