@@ -1,6 +1,7 @@
 package com.jpycrgo.gsimgdown.baseapi.db;
 
 import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,7 +26,7 @@ public class RecordDBThread extends Thread {
 
         while (!Thread.interrupted()) {
             if (DBThreadManager.MAIN_FINISHED && DBThreadManager.RECORD_QUEUE.size() == 0) {
-                LOGGER.debug("主线程执行完成，并且数据记录队列为空，数据记录线程退出");
+                LOGGER.info("主线程执行完成，并且数据记录队列为空，数据记录线程退出");
                 break;
             }
 
@@ -41,7 +42,13 @@ public class RecordDBThread extends Thread {
                 }
             }
             catch (InterruptedException e) {
-                LOGGER.error("从记录数据队列中获取数据失败, message: " + e.getMessage());
+                if (StringUtils.isNotBlank(e.getMessage())) {
+                    LOGGER.error("主程序退出或者从记录数据队列中获取数据失败, message: " + e.getMessage());
+                }
+                else {
+                    LOGGER.info("主线程执行完成，并且数据记录队列为空，数据记录线程退出");
+                    break;
+                }
             }
         }
     }
