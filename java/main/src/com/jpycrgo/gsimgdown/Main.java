@@ -8,6 +8,7 @@ import com.jpycrgo.gsimgdown.bean.JsonParamBean;
 import com.jpycrgo.gsimgdown.bean.SiteOverviewBean;
 import com.jpycrgo.gsimgdown.manager.CheckManager;
 import com.jpycrgo.gsimgdown.manager.DBManager;
+import com.jpycrgo.gsimgdown.utils.ConstantsUtils;
 import com.jpycrgo.gsimgdown.utils.DocumentUtils;
 import com.jpycrgo.gsimgdown.utils.HttpClientUtils;
 import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
@@ -104,14 +105,16 @@ public class Main {
         DBThreadManager.activateRecordThread();
 
         ImageDownloadTask thread = new ImageDownloadTask(imageThemeSetBeans, PropertiesUtils.getProperty("save_img_path"));
-        Thread[] threads = new Thread[4];
-        for (int i=0; i<4; i++) {
+        int threadCount = PropertiesUtils.getIntProperty("download-thread-count", ConstantsUtils.DEFAULT_DOWNLOADTHREAD_COUNT);
+        logger.info("开启下载线程数： " + threadCount);
+        Thread[] threads = new Thread[threadCount];
+        for (int i=0; i<threadCount; i++) {
             threads[i] = new Thread(thread);
             threads[i].setName("IMAGE-DOWNLOADER-" + threads[i].getName());
             threads[i].start();
         }
 
-        for(int i=0; i<4; i++) {
+        for(int i=0; i<threadCount; i++) {
             threads[i].join();
         }
 

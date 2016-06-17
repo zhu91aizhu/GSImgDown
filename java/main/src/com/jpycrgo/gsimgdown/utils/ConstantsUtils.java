@@ -14,6 +14,8 @@ public class ConstantsUtils {
     private static final String PROXY_TYPE = "http";
     public static final ProxyConfig PROXY_CONFIG;
 
+    public static final int DEFAULT_DOWNLOADTHREAD_COUNT = 4;
+
     private static final String BASE_URL = "http://db2.gamersky.com/LabelJsonpAjax.aspx?jsondata=";
 
     static {
