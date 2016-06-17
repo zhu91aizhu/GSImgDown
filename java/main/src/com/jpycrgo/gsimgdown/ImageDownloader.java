@@ -1,10 +1,14 @@
 package com.jpycrgo.gsimgdown;
 
+import com.google.common.io.Files;
 import com.jpycrgo.gsimgdown.baseapi.db.AbstractRecord;
 import com.jpycrgo.gsimgdown.baseapi.db.DBThreadManager;
 import com.jpycrgo.gsimgdown.baseapi.db.ImageBeanRecord;
 import com.jpycrgo.gsimgdown.bean.ImageBean;
+import com.jpycrgo.gsimgdown.manager.CheckManager;
+import com.jpycrgo.gsimgdown.manager.Checkable;
 import com.jpycrgo.gsimgdown.utils.HttpClientUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
@@ -25,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author mengzx
  * @date 2016/4/29
- * @since 1.0.1
+ * @since 1.0.0
  */
 public class ImageDownloader {
 
@@ -51,6 +55,12 @@ public class ImageDownloader {
         int size = imageurls.size();
         for (int i=0; i<size; i++) {
             String url = imageurls.get(i);
+            Checkable checkor = CheckManager.generateCheckor(url, CheckManager.CheckType.IMAGE);
+            if (CheckManager.check(checkor)) {
+                logger.info(String.format("图片 [%s] 已存在，不进行下载.", url));
+                continue;
+            }
+
             int pos = url.lastIndexOf("/");
             String filename;
             if (path.endsWith(File.separator)) {
@@ -60,9 +70,10 @@ public class ImageDownloader {
                 filename = path + File.separator + url.substring(pos + 1);
             }
 
-            File imgFile = new File(filename);
-            if (imgFile.exists()) {
-                logger.info(String.format("图片 [%s] 已存在，不进行下载.", imgFile.getName()));
+            checkor = CheckManager.generateCheckor(filename, CheckManager.CheckType.FILE);
+            if (CheckManager.check(checkor)) {
+                int index = filename.lastIndexOf(File.separator);
+                logger.info(String.format("图片 [%s] 已存在，不进行下载.", filename.substring(index + 1)));
                 continue;
             }
 

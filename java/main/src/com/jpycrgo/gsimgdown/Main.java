@@ -5,10 +5,12 @@ import com.google.common.io.CharStreams;
 import com.jpycrgo.gsimgdown.baseapi.db.DBThreadManager;
 import com.jpycrgo.gsimgdown.bean.ImageThemeBean;
 import com.jpycrgo.gsimgdown.bean.JsonParamBean;
+import com.jpycrgo.gsimgdown.manager.CheckManager;
 import com.jpycrgo.gsimgdown.utils.DocumentUtils;
 import com.jpycrgo.gsimgdown.bean.SiteOverviewBean;
 import com.jpycrgo.gsimgdown.utils.HttpClientUtils;
 import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -33,7 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author mengzx
  * @date 2016/4/27
- * @since 1.0.1
+ * @since 1.0.0
  */
 public class Main {
 
@@ -98,6 +100,7 @@ public class Main {
 
         ImageDownloader.leftImageThemeCount = new AtomicInteger(imageThemeSetBeans.size());
 
+        CheckManager.setCheckType(PropertiesUtils.getProperty("check-type"));
         DBThreadManager.activateRecordThread();
 
         ImageDownloadTask thread = new ImageDownloadTask(imageThemeSetBeans, PropertiesUtils.getProperty("save_img_path"));

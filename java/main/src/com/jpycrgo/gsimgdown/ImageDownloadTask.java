@@ -4,6 +4,8 @@ import com.jpycrgo.gsimgdown.baseapi.db.AbstractBeanRecord;
 import com.jpycrgo.gsimgdown.baseapi.db.DBThreadManager;
 import com.jpycrgo.gsimgdown.baseapi.db.ImageThemeBeanRecord;
 import com.jpycrgo.gsimgdown.bean.ImageThemeBean;
+import com.jpycrgo.gsimgdown.manager.CheckManager;
+import com.jpycrgo.gsimgdown.manager.Checkable;
 import com.jpycrgo.gsimgdown.utils.DocumentUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +24,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * @author mengzx
  * @date 2016/4/29
- * @since 1.0.1
+ * @since 1.0.0
  */
 public class ImageDownloadTask implements Runnable {
 
@@ -68,6 +70,14 @@ public class ImageDownloadTask implements Runnable {
             ImageThemeBean imageThemeBean = imageThemeQueue.poll();
             if (imageThemeBean == null) {
                 break;
+            }
+
+            Checkable checkor = CheckManager.generateCheckor(imageThemeBean.getSid(), CheckManager.CheckType.IMAGETHEME);
+            if (CheckManager.check(checkor)) {
+                logger.info(String.format("图片主题 [%s] 已存在，不进行下载.", imageThemeBean.getTitle()));
+                int count = ImageDownloader.leftImageThemeCount.getAndDecrement();
+                logger.info(String.format("剩余未下载图片主题数: [%d]", count - 1));
+                continue;
             }
 
             String path = StringUtils.EMPTY;

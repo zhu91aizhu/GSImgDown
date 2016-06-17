@@ -32,6 +32,9 @@ public class DBThreadManager {
      */
     public static void interruptRecordThread() {
         MAIN_FINISHED = true;
+        if (RECORD_QUEUE.size() == 0) {
+            SAVE_RECORD_THREAD.interrupt();
+        }
     }
 
     /**
