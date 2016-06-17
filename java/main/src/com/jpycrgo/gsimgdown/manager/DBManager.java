@@ -26,7 +26,7 @@ public class DBManager {
                 CONN = DriverManager.getConnection(PropertiesUtils.getProperty("database_url"));
             }
             catch (SQLException e) {
-                LOGGER.error("获取连接失败.");
+                LOGGER.error("鑾峰彇杩炴帴澶辫触.");
             }
         }
     }
@@ -39,4 +39,7 @@ public class DBManager {
         return DBHelper.isExistsImageTheme(CONN, sid);
     }
 
+    public static void initDataBase() {
+        DBHelper.initDataBase(CONN);
+    }
 }

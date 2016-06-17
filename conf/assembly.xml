@@ -29,6 +29,9 @@
                 <include>start.sh</include>
                 <include>addclasspath.bat</include>
                 <include>start.bat</include>
+
+                <include>image.sql</include>
+                <include>imagetheme.sql</include>
             </includes>
         </fileSet>
         <!-- 程序配置文件 -->
@@ -38,14 +41,6 @@
             <includes>
                 <include>app.properties</include>
                 <include>log4j.xml</include>
-            </includes>
-        </fileSet>
-        <!-- 数据库文件 -->
-        <fileSet>
-            <directory>${basedir}/db</directory>
-            <outputDirectory>db</outputDirectory>
-            <includes>
-                <include>app.db</include>
             </includes>
         </fileSet>
     </fileSets>

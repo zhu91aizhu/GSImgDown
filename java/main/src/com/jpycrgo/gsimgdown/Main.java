@@ -7,6 +7,7 @@ import com.jpycrgo.gsimgdown.bean.ImageThemeBean;
 import com.jpycrgo.gsimgdown.bean.JsonParamBean;
 import com.jpycrgo.gsimgdown.bean.SiteOverviewBean;
 import com.jpycrgo.gsimgdown.manager.CheckManager;
+import com.jpycrgo.gsimgdown.manager.DBManager;
 import com.jpycrgo.gsimgdown.utils.DocumentUtils;
 import com.jpycrgo.gsimgdown.utils.HttpClientUtils;
 import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
@@ -99,6 +100,7 @@ public class Main {
         ImageDownloader.leftImageThemeCount = new AtomicInteger(imageThemeSetBeans.size());
 
         CheckManager.setCheckType(PropertiesUtils.getProperty("check-type"));
+        DBManager.initDataBase();
         DBThreadManager.activateRecordThread();
 
         ImageDownloadTask thread = new ImageDownloadTask(imageThemeSetBeans, PropertiesUtils.getProperty("save_img_path"));

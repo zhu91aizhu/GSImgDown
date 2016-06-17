@@ -5,7 +5,12 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.LineNumberReader;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
@@ -19,6 +24,33 @@ public class DBHelper {
 
     static {
         DbUtils.loadDriver("org.sqlite.JDBC");
+    }
+
+    /**
+     * 初始化数据库，如果数据库文件不存在则创建
+     */
+    public static void initDataBase(Connection conn) {
+        QueryRunner runner = new QueryRunner();
+        File imgSQLFile = new File("scripts/image.sql");
+        File imgthemeSQLFile = new File("scripts/imagetheme.sql");
+
+        try {
+            StringBuilder imgSQLSB = new StringBuilder();
+            LineNumberReader reader = new LineNumberReader(new FileReader(imgSQLFile));
+            reader.lines().forEach(line -> imgSQLSB.append(line).append(System.getProperty("line.separator")));
+            runner.update(conn, imgSQLSB.toString());
+
+            StringBuilder imgthemeSQLSB = new StringBuilder();
+            reader = new LineNumberReader(new FileReader(imgthemeSQLFile));
+            reader.lines().forEach(line -> imgthemeSQLSB.append(line).append(System.getProperty("line.separator")));
+            runner.update(conn, imgthemeSQLSB.toString());
+        }
+        catch (FileNotFoundException e) {
+            logger.error("没有找到数据库初始化文件, 错误信息： " + e.getMessage());
+        }
+        catch (SQLException e) {
+            logger.error("初始化数据库语句错误.");
+        }
     }
 
     /**
