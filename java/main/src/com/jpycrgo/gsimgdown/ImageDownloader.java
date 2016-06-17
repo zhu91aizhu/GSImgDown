@@ -1,6 +1,5 @@
 package com.jpycrgo.gsimgdown;
 
-import com.google.common.io.Files;
 import com.jpycrgo.gsimgdown.baseapi.db.AbstractRecord;
 import com.jpycrgo.gsimgdown.baseapi.db.DBThreadManager;
 import com.jpycrgo.gsimgdown.baseapi.db.ImageBeanRecord;
@@ -8,7 +7,6 @@ import com.jpycrgo.gsimgdown.bean.ImageBean;
 import com.jpycrgo.gsimgdown.manager.CheckManager;
 import com.jpycrgo.gsimgdown.manager.Checkable;
 import com.jpycrgo.gsimgdown.utils.HttpClientUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;

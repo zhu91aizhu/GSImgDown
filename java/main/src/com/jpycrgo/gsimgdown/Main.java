@@ -5,12 +5,11 @@ import com.google.common.io.CharStreams;
 import com.jpycrgo.gsimgdown.baseapi.db.DBThreadManager;
 import com.jpycrgo.gsimgdown.bean.ImageThemeBean;
 import com.jpycrgo.gsimgdown.bean.JsonParamBean;
+import com.jpycrgo.gsimgdown.bean.SiteOverviewBean;
 import com.jpycrgo.gsimgdown.manager.CheckManager;
 import com.jpycrgo.gsimgdown.utils.DocumentUtils;
-import com.jpycrgo.gsimgdown.bean.SiteOverviewBean;
 import com.jpycrgo.gsimgdown.utils.HttpClientUtils;
 import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -86,7 +85,6 @@ public class Main {
                 String url = tit.attr("href");
                 String title = tit.attr("title");
 
-                Element txt = themeSetElement.select("div[class='txt']").get(0);
                 String description = tit.text();
 
                 Element pls = themeSetElement.select("div[class='pls cy_comment']").get(0);
