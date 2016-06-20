@@ -3,6 +3,7 @@ package com.jpycrgo.gsimgdown.baseapi.db;
 import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,25 +44,28 @@ public class DBHelper {
      */
     public static void initDataBase(Connection conn) {
         QueryRunner runner = new QueryRunner();
-        File imgSQLFile = new File("scripts/image.sql");
-        File imgthemeSQLFile = new File("scripts/imagetheme.sql");
+        File scriptFiles = new File("scripts/");
+        File[] sqlFiles = scriptFiles.listFiles((dir, name) -> {
+            if (StringUtils.endsWithIgnoreCase(name, "sql")) {
+                return true;
+            }
 
-        try {
-            StringBuilder imgSQLSB = new StringBuilder();
-            LineNumberReader reader = new LineNumberReader(new FileReader(imgSQLFile));
-            reader.lines().forEach(line -> imgSQLSB.append(line).append(System.getProperty("line.separator")));
-            runner.update(conn, imgSQLSB.toString());
+            return false;
+        });
 
-            StringBuilder imgthemeSQLSB = new StringBuilder();
-            reader = new LineNumberReader(new FileReader(imgthemeSQLFile));
-            reader.lines().forEach(line -> imgthemeSQLSB.append(line).append(System.getProperty("line.separator")));
-            runner.update(conn, imgthemeSQLSB.toString());
-        }
-        catch (FileNotFoundException e) {
-            logger.error("没有找到数据库初始化文件, 错误信息： " + e.getMessage());
-        }
-        catch (SQLException e) {
-            logger.error("初始化数据库语句错误.");
+        for (File sqlFile : sqlFiles) {
+            try {
+                StringBuilder imgSQLSB = new StringBuilder();
+                LineNumberReader reader = new LineNumberReader(new FileReader(sqlFile));
+                reader.lines().forEach(line -> imgSQLSB.append(line).append(System.getProperty("line.separator")));
+                runner.update(conn, imgSQLSB.toString());
+            }
+            catch (FileNotFoundException e) {
+                logger.error("没有找到数据库初始化文件, 错误信息： " + e.getMessage());
+            }
+            catch (SQLException e) {
+                logger.error("初始化数据库语句错误.");
+            }
         }
     }
 
