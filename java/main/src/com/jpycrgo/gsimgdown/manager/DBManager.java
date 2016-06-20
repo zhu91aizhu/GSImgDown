@@ -21,6 +21,8 @@ public class DBManager {
     private static final Logger LOGGER = LogManager.getLogger(DBManager.class);
 
     static {
+        DBHelper.loadDriverAndInitDBPath();
+
         if (CONN == null) {
             try {
                 CONN = DriverManager.getConnection(PropertiesUtils.getProperty("database_url"));
