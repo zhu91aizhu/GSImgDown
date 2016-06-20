@@ -1,5 +1,6 @@
 package com.jpycrgo.gsimgdown.baseapi.db;
 
+import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.logging.log4j.LogManager;
@@ -10,7 +11,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
@@ -22,8 +22,20 @@ public class DBHelper {
 
     private static final Logger logger = LogManager.getLogger(DBHelper.class);
 
-    static {
+    /**
+     * 加载数据库驱动，并且创建数据库文件所在目录
+     */
+    public static void loadDriverAndInitDBPath() {
         DbUtils.loadDriver("org.sqlite.JDBC");
+
+        String dbURL = PropertiesUtils.getProperty("database_url");
+        int lastIndex = dbURL.lastIndexOf(":");
+        String dbFilePath = dbURL.substring(lastIndex + 1);
+        File dbFile = new File(dbFilePath);
+        File parentFile = dbFile.getAbsoluteFile().getParentFile();
+        if (!parentFile.exists()) {
+            parentFile.mkdirs();
+        }
     }
 
     /**
