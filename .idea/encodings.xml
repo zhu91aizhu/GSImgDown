@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding">
+  <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$/README.txt" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/java/main/src/com/jpycrgo/gsimgdown/ImageDownloadTask.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/java/main/src/com/jpycrgo/gsimgdown/ImageDownloader.java" charset="UTF-8" />
@@ -9,6 +9,10 @@
     <file url="file://$PROJECT_DIR$/java/main/src/com/jpycrgo/gsimgdown/baseapi/db/DBThreadManager.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/java/main/src/com/jpycrgo/gsimgdown/baseapi/db/ImageThemeBeanRecord.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/java/main/src/com/jpycrgo/gsimgdown/baseapi/db/RecordDBThread.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/java/main/src/com/jpycrgo/gsimgdown/manager/CheckManager.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/java/main/src/com/jpycrgo/gsimgdown/manager/DBManager.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/java/main/src/com/jpycrgo/gsimgdown/utils/DocumentUtils.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/java/main/src/com/jpycrgo/gsimgdown/utils/PropertiesUtils.java" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

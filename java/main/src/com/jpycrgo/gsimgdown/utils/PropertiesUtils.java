@@ -30,7 +30,7 @@ public class PropertiesUtils {
             properties.load(resourceInputStream);
         }
         catch (IOException e) {
-            logger.error("ÔØÈë app ÅäÖÃÎÄ¼ş´íÎó.");
+            logger.error("è½½å…¥ app é…ç½®æ–‡ä»¶é”™è¯¯.");
         }
     }
 

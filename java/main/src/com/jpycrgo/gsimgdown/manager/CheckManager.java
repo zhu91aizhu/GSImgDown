@@ -16,8 +16,8 @@ public class CheckManager {
     private static boolean checkImageThemeFlag = false;
 
     /**
-     * ÉèÖÃ¼ìÑéÀàĞÍ
-     * @param checktype ¼ìÑéÀàĞÍ
+     * è®¾ç½®æ£€éªŒç±»å‹
+     * @param checktype æ£€éªŒç±»å‹
      */
     public static void setCheckType(String checktype) {
         if (StringUtils.equals(checktype, "file")) {
@@ -34,9 +34,9 @@ public class CheckManager {
     }
 
     /**
-     * ¼ìÑéÊÇ·ñ´æÔÚ¼ÇÂ¼
-     * @param checkor ¼ìÑéÆ÷
-     * @return ´æÔÚ·Å»Ø true, ·ñÔò·µ»Ø false
+     * æ£€éªŒæ˜¯å¦å­˜åœ¨è®°å½•
+     * @param checkor æ£€éªŒå™¨
+     * @return å­˜åœ¨æ”¾å› true, å¦åˆ™è¿”å› false
      */
     public static boolean check(Checkable checkor) {
         if (checkFileFlag && checkor instanceof FileCheckor && checkor.check()) {
@@ -55,10 +55,10 @@ public class CheckManager {
     }
 
     /**
-     * Éú³É¼ìÑéÆ÷
-     * @param param ¼ìÑé²ÎÊı
-     * @param checkType ¼ìÑéÀàĞÍ
-     * @return ¼ìÑéÆ÷
+     * ç”Ÿæˆæ£€éªŒå™¨
+     * @param param æ£€éªŒå‚æ•°
+     * @param checkType æ£€éªŒç±»å‹
+     * @return æ£€éªŒå™¨
      */
     public static Checkable generateCheckor(String param, CheckManager.CheckType checkType) {
         Checkable checkor = null;
@@ -79,7 +79,7 @@ public class CheckManager {
     }
 
     /**
-     * ¼ìÑéÀàĞÍ
+     * æ£€éªŒç±»å‹
      */
     public static enum CheckType {
         FILE, IMAGE, IMAGETHEME

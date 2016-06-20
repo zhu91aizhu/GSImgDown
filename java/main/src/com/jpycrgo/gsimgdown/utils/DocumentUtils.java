@@ -25,9 +25,9 @@ public class DocumentUtils {
             throw new IllegalArgumentException("url is blank");
         }
 
-        // 创建HttpClient实例
+        // 鍒涘缓HttpClient瀹炰緥
         HttpClient httpclient = HttpClientUtils.getHttpClient();
-        // 创建Get方法实例
+        // 鍒涘缓Get鏂规硶瀹炰緥
         HttpGet httpGet = new HttpGet(url);
         RequestConfig config = HttpClientUtils.getProxyRequestConfig();
         httpGet.setConfig(config);
