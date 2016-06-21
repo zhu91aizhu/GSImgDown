@@ -100,7 +100,7 @@ public class Main {
 
         ImageDownloader.leftImageThemeCount = new AtomicInteger(imageThemeSetBeans.size());
 
-        CheckManager.setCheckType(PropertiesUtils.getProperty("check-type"));
+        CheckManager.setCheckType(PropertiesUtils.getProperty("check-type", ConstantsUtils.DEFAULT_CHECK_TYPE));
         DBManager.initDataBase();
         DBThreadManager.activateRecordThread();
 

@@ -9,6 +9,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class CheckManager {
 
+    private static boolean checkNotFlag = false;
+
     private static boolean checkFileFlag = false;
 
     private static boolean checkImageFlag = false;
@@ -20,6 +22,10 @@ public class CheckManager {
      * @param checktype 检验类型
      */
     public static void setCheckType(String checktype) {
+        if (StringUtils.equals(checktype, "no")) {
+            CheckManager.checkNotFlag = true;
+        }
+
         if (StringUtils.equals(checktype, "file")) {
             CheckManager.checkFileFlag = true;
         }
@@ -39,16 +45,20 @@ public class CheckManager {
      * @return 存在放回 true, 否则返回 false
      */
     public static boolean check(Checkable checkor) {
-        if (checkFileFlag && checkor instanceof FileCheckor && checkor.check()) {
-            return true;
+        if (checkNotFlag && checkor instanceof NotCheckor) {
+            return checkor.check();
         }
 
-        if (checkImageFlag && checkor instanceof ImageCheckor && checkor.check()) {
-            return true;
+        if (checkFileFlag && checkor instanceof FileCheckor) {
+            return checkor.check();
         }
 
-        if (checkImageThemeFlag && checkor instanceof ImageThemeCheckor && checkor.check()) {
-            return true;
+        if (checkImageFlag && checkor instanceof ImageCheckor) {
+            return checkor.check();
+        }
+
+        if (checkImageThemeFlag && checkor instanceof ImageThemeCheckor) {
+            return checkor.check();
         }
 
         return false;
@@ -64,6 +74,9 @@ public class CheckManager {
         Checkable checkor = null;
 
         switch (checkType) {
+            case NO:
+                checkor = new NotCheckor();
+                break;
             case FILE:
                 checkor = new FileCheckor(param);
                 break;
@@ -81,8 +94,8 @@ public class CheckManager {
     /**
      * 检验类型
      */
-    public static enum CheckType {
-        FILE, IMAGE, IMAGETHEME
+    public enum CheckType {
+        NO, FILE, IMAGE, IMAGETHEME
     }
 
 }

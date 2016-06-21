@@ -38,6 +38,10 @@ public class PropertiesUtils {
         return properties.getProperty(key, StringUtils.EMPTY);
     }
 
+    public static String getProperty(String key, String defaultValue) {
+        return properties.getProperty(key, defaultValue);
+    }
+
     public static int getIntProperty(String key) {
         String orgValue = getProperty(key);
         return NumberUtils.toInt(orgValue);
