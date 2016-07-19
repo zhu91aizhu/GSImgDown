@@ -106,11 +106,13 @@ public class Main {
 
         ImageDownloadTask thread = new ImageDownloadTask(imageThemeSetBeans, PropertiesUtils.getProperty("save_img_path"));
         int threadCount = PropertiesUtils.getIntProperty("download-thread-count", ConstantsUtils.DEFAULT_DOWNLOADTHREAD_COUNT);
+
         logger.info("开启下载线程数： " + threadCount);
+
         Thread[] threads = new Thread[threadCount];
         for (int i=0; i<threadCount; i++) {
             threads[i] = new Thread(thread);
-            threads[i].setName("IMAGE-DOWNLOADER-" + threads[i].getName());
+            threads[i].setName("IMAGE-DOWNLOADER-" + i);
             threads[i].start();
         }
 
