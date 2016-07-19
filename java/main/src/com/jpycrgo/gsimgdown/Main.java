@@ -1,36 +1,21 @@
 package com.jpycrgo.gsimgdown;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.io.CharStreams;
 import com.jpycrgo.gsimgdown.baseapi.db.DBThreadManager;
 import com.jpycrgo.gsimgdown.bean.ImageThemeBean;
-import com.jpycrgo.gsimgdown.bean.JsonParamBean;
-import com.jpycrgo.gsimgdown.bean.SiteOverviewBean;
 import com.jpycrgo.gsimgdown.manager.CheckManager;
 import com.jpycrgo.gsimgdown.manager.DBManager;
 import com.jpycrgo.gsimgdown.utils.ConstantsUtils;
-import com.jpycrgo.gsimgdown.utils.DocumentUtils;
-import com.jpycrgo.gsimgdown.utils.HttpClientUtils;
 import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
-import java.io.*;
-import java.util.Map;
-import java.util.Objects;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -52,18 +37,11 @@ public class Main {
         }
     }
 
-    private static final String BASE_URL = "http://db2.gamersky.com/LabelJsonpAjax.aspx?jsondata=";
-
     private static final Logger logger = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) throws Exception {
-
-        Document document = DocumentUtils.getUrlDocument("http://www.gamersky.com/ent/wp/");
-        Elements elements = document.body().select("a[data-count]");
-        Element element = elements.get(0);
-        SiteOverviewBean dataOverview = getDataOverview(element);
-        int pageTotal = getPageTotal(dataOverview.getDataTotal(), dataOverview.getDataPageSize());
-
+        ImageSiteAnalyzer analyzer = new ImageSiteAnalyzer("http://www.gamersky.com/ent/wp/");
+        int pageTotal = analyzer.getPageTotal();
         int beginPageIndex = PropertiesUtils.getIntProperty("begin-page-index");
         int endPageIndex = PropertiesUtils.getIntProperty("end-page-index", pageTotal);
         if (beginPageIndex > endPageIndex) {
@@ -74,30 +52,10 @@ public class Main {
         logger.info("下载开始页数：" + beginPageIndex);
         logger.info("下载结束页数：" + endPageIndex);
 
-        JsonParamBean jsonParamBean = new JsonParamBean();
-        BlockingQueue<ImageThemeBean> imageThemeSetBeans = new LinkedBlockingQueue<ImageThemeBean>();
-        for (int i = beginPageIndex; i < endPageIndex; i++) {
-            int pageIndex = i + 1;
-            jsonParamBean.setPageIndex(pageIndex);
+        analyzer.setBeginPageIndex(beginPageIndex);
+        analyzer.setEndPageIndex(endPageIndex);
 
-            Document imageThemeSet = getImageThemeSet(jsonParamBean);
-            Elements themeSetElements = imageThemeSet.body().select("li");
-            for (Element themeSetElement : themeSetElements) {
-                Element tit = themeSetElement.select("div[class='tit']>a").get(0);
-                String url = tit.attr("href");
-                String title = tit.attr("title");
-
-                String description = tit.text();
-
-                Element pls = themeSetElement.select("div[class='pls cy_comment']").get(0);
-                String sid = pls.attr("data-sid");
-
-                ImageThemeBean imageThemeSetBean = new ImageThemeBean(title, description, url, sid);
-                logger.info(String.format("添加图片主题 [%s - %s]", title, url));
-                imageThemeSetBeans.add(imageThemeSetBean);
-            }
-        }
-
+        BlockingQueue<ImageThemeBean> imageThemeSetBeans = analyzer.analysis();
         ImageDownloader.leftImageThemeCount = new AtomicInteger(imageThemeSetBeans.size());
 
         CheckManager.setCheckType(PropertiesUtils.getProperty("check-type", ConstantsUtils.DEFAULT_CHECK_TYPE));
@@ -125,48 +83,6 @@ public class Main {
 
         logger.info("任务执行完成，程序正在退出.");
         System.exit(0);
-    }
-
-    private static Document getImageThemeSet(JsonParamBean jsonParamBean) throws Exception {
-        // 创建Get方法实例
-        HttpGet httpGet = new HttpGet(BASE_URL + jsonParamBean.parseParams());
-        RequestConfig config = HttpClientUtils.getProxyRequestConfig();
-        httpGet.setConfig(config);
-
-        // 创建HttpClient实例
-        HttpClient httpclient = HttpClientUtils.getHttpClient();
-        HttpResponse httpResponse = httpclient.execute(httpGet);
-        HttpEntity entity = httpResponse.getEntity();
-        if (entity == null) {
-            throw new RuntimeException("request is failure.");
-        }
-
-        String content;
-        try (InputStream instream = entity.getContent()) {
-            content = CharStreams.toString(new InputStreamReader(instream, "UTF-8"));
-        }
-        httpGet.abort();
-
-        if (!content.startsWith("(")) {
-            throw new RuntimeException("return data format error.");
-        }
-        content = content.substring(1, content.length() - 2);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map resultMap = objectMapper.readValue(content, Map.class);
-        String body = Objects.toString(resultMap.get("body"));
-        return Jsoup.parse(body);
-    }
-
-    private static int getPageTotal(int dataTotal, int pageSize) {
-        return dataTotal % pageSize == 0 ? dataTotal / pageSize : dataTotal / pageSize + 1;
-    }
-
-    private static SiteOverviewBean getDataOverview(Element element) {
-        assert element == null : "argument[element] index 0 is null";
-
-        return SiteOverviewBean.parseDataOverview(element.attr(SiteOverviewBean.DATA_COUNT_CODE),
-                element.attr(SiteOverviewBean.PAGE_SIZE_CODE));
     }
 
 }
