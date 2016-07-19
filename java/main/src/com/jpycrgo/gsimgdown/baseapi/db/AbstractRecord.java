@@ -17,8 +17,4 @@ public abstract class AbstractRecord {
         return recordName;
     }
 
-    public void setRecordName(String name) {
-        recordName = name;
-    }
-
 }

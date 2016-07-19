@@ -141,9 +141,10 @@ public class Main {
             throw new RuntimeException("request is failure.");
         }
 
-        InputStream instream = entity.getContent();
-        String content = CharStreams.toString(new InputStreamReader(instream, "UTF-8"));
-        instream.close();
+        String content;
+        try (InputStream instream = entity.getContent()) {
+            content = CharStreams.toString(new InputStreamReader(instream, "UTF-8"));
+        }
         httpGet.abort();
 
         if (!content.startsWith("(")) {
@@ -158,11 +159,7 @@ public class Main {
     }
 
     private static int getPageTotal(int dataTotal, int pageSize) {
-        if (dataTotal % pageSize == 0) {
-            return dataTotal / pageSize;
-        }
-
-        return dataTotal / pageSize + 1;
+        return dataTotal % pageSize == 0 ? dataTotal / pageSize : dataTotal / pageSize + 1;
     }
 
     private static SiteOverviewBean getDataOverview(Element element) {
