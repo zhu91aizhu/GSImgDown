@@ -1,5 +1,6 @@
 package com.jpycrgo.gsimgdown.baseapi.db;
 
+import com.jpycrgo.gsimgdown.baseapi.db.bean.AbstractRecord;
 import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;

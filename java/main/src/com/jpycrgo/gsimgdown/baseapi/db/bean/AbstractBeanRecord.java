@@ -1,4 +1,4 @@
-package com.jpycrgo.gsimgdown.baseapi.db;
+package com.jpycrgo.gsimgdown.baseapi.db.bean;
 
 /**
  * @author mengzx

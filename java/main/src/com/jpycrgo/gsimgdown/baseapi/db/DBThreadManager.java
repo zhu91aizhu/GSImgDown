@@ -1,5 +1,9 @@
 package com.jpycrgo.gsimgdown.baseapi.db;
 
+import com.jpycrgo.gsimgdown.baseapi.db.bean.AbstractRecord;
+import com.jpycrgo.gsimgdown.baseapi.db.bean.ImageBeanRecord;
+import com.jpycrgo.gsimgdown.baseapi.db.bean.ImageThemeBeanRecord;
+import com.jpycrgo.gsimgdown.baseapi.db.bean.RecordDBThread;
 import com.jpycrgo.gsimgdown.bean.ImageBean;
 import com.jpycrgo.gsimgdown.bean.ImageThemeBean;
 import org.apache.logging.log4j.LogManager;
@@ -67,54 +71,8 @@ public class DBThreadManager {
             RECORD_QUEUE.put(record);
         }
         catch (InterruptedException e) {
-            LOGGER.error(String.format("向数据线程放入%s数据失败，message: %s", record.recordName, e.getMessage()));
+            LOGGER.error(String.format("向数据线程放入%s数据失败，message: %s", record.getRecordName(), e.getMessage()));
         }
-    }
-
-    /**
-     * @since 1.0.0
-     */
-    @Deprecated
-    public static void saveImageTheme(ImageThemeBean bean) {
-        AbstractRecord record = new ImageThemeBeanRecord(bean);
-
-        try {
-            RECORD_QUEUE.put(record);
-        }
-        catch (InterruptedException e) {
-            LOGGER.error("向图片主题数据线程放入数据失败，message: " + e.getMessage());
-        }
-
-        if (!SAVE_RECORD_THREAD.isAlive()) {
-            SAVE_RECORD_THREAD.start();
-        }
-    }
-
-    /**
-     * @since 1.0.1
-     */
-    @Deprecated
-    public static void saveImage(ImageBean bean) {
-        AbstractRecord record = new ImageBeanRecord(bean);
-
-        try {
-            RECORD_QUEUE.put(record);
-        }
-        catch (InterruptedException e) {
-            LOGGER.error("向图片主题数据线程放入数据失败，message: " + e.getMessage());
-        }
-
-        if (!SAVE_RECORD_THREAD.isAlive()) {
-            SAVE_RECORD_THREAD.start();
-        }
-    }
-
-    /**
-     * @since 1.0.0
-     */
-    @Deprecated
-    public static void saveImage(String sid, String url) {
-        saveImage(new ImageBean(sid, url));
     }
 
 }

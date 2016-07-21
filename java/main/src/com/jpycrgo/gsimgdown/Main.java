@@ -1,6 +1,8 @@
 package com.jpycrgo.gsimgdown;
 
 import com.jpycrgo.gsimgdown.baseapi.db.DBThreadManager;
+import com.jpycrgo.gsimgdown.baseapi.net.ImageDownloader;
+import com.jpycrgo.gsimgdown.baseapi.net.ImageSiteAnalyzer;
 import com.jpycrgo.gsimgdown.bean.ImageThemeBean;
 import com.jpycrgo.gsimgdown.manager.CheckManager;
 import com.jpycrgo.gsimgdown.manager.DBManager;

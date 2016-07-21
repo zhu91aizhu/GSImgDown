@@ -1,4 +1,4 @@
-package com.jpycrgo.gsimgdown;
+package com.jpycrgo.gsimgdown.baseapi.net;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.CharStreams;

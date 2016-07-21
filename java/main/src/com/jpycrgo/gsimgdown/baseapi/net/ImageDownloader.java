@@ -1,8 +1,8 @@
-package com.jpycrgo.gsimgdown;
+package com.jpycrgo.gsimgdown.baseapi.net;
 
-import com.jpycrgo.gsimgdown.baseapi.db.AbstractRecord;
+import com.jpycrgo.gsimgdown.baseapi.db.bean.AbstractRecord;
 import com.jpycrgo.gsimgdown.baseapi.db.DBThreadManager;
-import com.jpycrgo.gsimgdown.baseapi.db.ImageBeanRecord;
+import com.jpycrgo.gsimgdown.baseapi.db.bean.ImageBeanRecord;
 import com.jpycrgo.gsimgdown.bean.ImageBean;
 import com.jpycrgo.gsimgdown.manager.CheckManager;
 import com.jpycrgo.gsimgdown.manager.Checkable;

@@ -1,8 +1,10 @@
 package com.jpycrgo.gsimgdown;
 
-import com.jpycrgo.gsimgdown.baseapi.db.AbstractBeanRecord;
+import com.google.common.collect.Lists;
+import com.jpycrgo.gsimgdown.baseapi.db.bean.AbstractBeanRecord;
 import com.jpycrgo.gsimgdown.baseapi.db.DBThreadManager;
-import com.jpycrgo.gsimgdown.baseapi.db.ImageThemeBeanRecord;
+import com.jpycrgo.gsimgdown.baseapi.db.bean.ImageThemeBeanRecord;
+import com.jpycrgo.gsimgdown.baseapi.net.ImageDownloader;
 import com.jpycrgo.gsimgdown.bean.ImageThemeBean;
 import com.jpycrgo.gsimgdown.manager.CheckManager;
 import com.jpycrgo.gsimgdown.manager.Checkable;
@@ -42,11 +44,11 @@ public class ImageDownloadTask implements Runnable {
     private List<String> getImageUrls(ImageThemeBean bean)throws IOException {
         List<String> pageUrls = getPageUrls(bean);
         List<String> imageurls = new ArrayList<>(pageUrls.size() * 4);
-        for (String url : pageUrls) {
+        pageUrls.forEach(url -> {
             List<String> urls = getImageUrls(url);
             urls.forEach(x -> logger.debug(String.format("图片主题: [%s] 包含: [%s - %s]", bean.getTitle(), url, x)));
             imageurls.addAll(urls);
-        }
+        });
 
         return imageurls;
     }
@@ -93,7 +95,7 @@ public class ImageDownloadTask implements Runnable {
                 file.mkdirs();
             }
 
-            List<String> imageUrls = Collections.EMPTY_LIST;
+            List<String> imageUrls = Lists.newArrayList();
             try {
                 imageUrls = getImageUrls(imageThemeBean);
             }
@@ -118,8 +120,16 @@ public class ImageDownloadTask implements Runnable {
         logger.info(String.format("Thread: %s 退出.", Thread.currentThread().getName()));
     }
 
-    private List<String> getImageUrls(String url) throws IOException {
-        Document document = DocumentUtils.getUrlDocument(url);
+    private List<String> getImageUrls(String url) {
+        Document document = null;
+        try {
+            document = DocumentUtils.getUrlDocument(url);
+        }
+        catch (IOException e) {
+            logger.error(String.format("请求 [%s] 失败. %s", url, e.getMessage()));
+            return Lists.newArrayList();
+        }
+
         Elements elements = document.body().select("div[class='Mid2L_con']>p[align='center']>a");
         List<String> urls = new ArrayList<>(elements.size());
         for (Element element : elements) {

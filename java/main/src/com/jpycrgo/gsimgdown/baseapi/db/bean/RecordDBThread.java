@@ -1,5 +1,7 @@
-package com.jpycrgo.gsimgdown.baseapi.db;
+package com.jpycrgo.gsimgdown.baseapi.db.bean;
 
+import com.jpycrgo.gsimgdown.baseapi.db.DBHelper;
+import com.jpycrgo.gsimgdown.baseapi.db.DBThreadManager;
 import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;

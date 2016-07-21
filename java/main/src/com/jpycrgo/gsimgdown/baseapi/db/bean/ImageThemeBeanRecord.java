@@ -1,4 +1,4 @@
-package com.jpycrgo.gsimgdown.baseapi.db;
+package com.jpycrgo.gsimgdown.baseapi.db.bean;
 
 import com.jpycrgo.gsimgdown.bean.ImageThemeBean;
 import org.apache.commons.lang3.StringUtils;
