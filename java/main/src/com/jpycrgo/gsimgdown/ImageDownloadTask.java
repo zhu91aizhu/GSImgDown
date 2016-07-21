@@ -1,8 +1,8 @@
 package com.jpycrgo.gsimgdown;
 
 import com.google.common.collect.Lists;
+import com.jpycrgo.gsimgdown.baseapi.db.DBExecutorServiceManager;
 import com.jpycrgo.gsimgdown.baseapi.db.bean.AbstractBeanRecord;
-import com.jpycrgo.gsimgdown.baseapi.db.DBThreadManager;
 import com.jpycrgo.gsimgdown.baseapi.db.bean.ImageThemeBeanRecord;
 import com.jpycrgo.gsimgdown.baseapi.net.ImageDownloader;
 import com.jpycrgo.gsimgdown.bean.ImageThemeBean;
@@ -19,9 +19,7 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 
 /**
  * @author mengzx
@@ -30,94 +28,85 @@ import java.util.concurrent.BlockingQueue;
  */
 public class ImageDownloadTask implements Runnable {
 
-    private BlockingQueue<ImageThemeBean> imageThemeQueue;
+    private ImageThemeBean imageThemeBean;
 
     private String path;
 
     private static final Logger logger = LogManager.getLogger(ImageDownloadTask.class);
 
-    public ImageDownloadTask(BlockingQueue<ImageThemeBean> imageThemeQueue, String path) throws IOException {
-        this.imageThemeQueue = imageThemeQueue;
+    public ImageDownloadTask(ImageThemeBean imageThemeBean, String path) {
+        this.imageThemeBean = imageThemeBean;
         this.path = path;
     }
 
-    private List<String> getImageUrls(ImageThemeBean bean)throws IOException {
-        List<String> pageUrls = getPageUrls(bean);
+    private List<String> getImageUrls()throws IOException {
+        List<String> pageUrls = getPageUrls();
         List<String> imageurls = new ArrayList<>(pageUrls.size() * 4);
         pageUrls.forEach(url -> {
             List<String> urls = getImageUrls(url);
-            urls.forEach(x -> logger.debug(String.format("图片主题: [%s] 包含: [%s - %s]", bean.getTitle(), url, x)));
+            urls.forEach(x -> logger.debug(String.format("图片主题: [%s] 包含: [%s - %s]", imageThemeBean.getTitle(), url, x)));
             imageurls.addAll(urls);
         });
 
         return imageurls;
     }
 
-    private List<String> getPageUrls(ImageThemeBean bean) throws IOException {
-        Document document = DocumentUtils.getUrlDocument(bean.getUrl());
+    private List<String> getPageUrls() throws IOException {
+        Document document = DocumentUtils.getUrlDocument(imageThemeBean.getUrl());
         Elements elements = document.body().select("div[class='page_css'] a");
         List<String> pageUrls = new ArrayList<>(elements.size());
         for (Element e : elements) {
             pageUrls.add(e.attr("href"));
         }
         pageUrls.remove(pageUrls.size() - 1);
-        logger.debug(String.format("图片主题 [%s] 共有: %d页", bean.getTitle(), pageUrls.size()));
+        logger.debug(String.format("图片主题 [%s] 共有: %d页", imageThemeBean.getTitle(), pageUrls.size()));
 
         return pageUrls;
     }
 
     @Override
     public void run() {
-        while (true) {
-            ImageThemeBean imageThemeBean = imageThemeQueue.poll();
-            if (imageThemeBean == null) {
-                break;
-            }
-
-            Checkable checkor = CheckManager.generateCheckor(imageThemeBean.getSid(), CheckManager.CheckType.IMAGETHEME);
-            if (CheckManager.check(checkor)) {
-                logger.info(String.format("图片主题 [%s] 已存在，不进行下载.", imageThemeBean.getTitle()));
-                int count = ImageDownloader.leftImageThemeCount.getAndDecrement();
-                logger.info(String.format("剩余未下载图片主题数: [%d]", count - 1));
-                continue;
-            }
-
-            String path = StringUtils.EMPTY;
-            if (path.endsWith(File.separator)) {
-                path = this.path + imageThemeBean.getTitle();
-            }
-            else {
-                path = this.path + File.separator + imageThemeBean.getTitle();
-            }
-
-            File file = new File(path);
-            if (!file.exists()) {
-                file.mkdirs();
-            }
-
-            List<String> imageUrls = Lists.newArrayList();
-            try {
-                imageUrls = getImageUrls(imageThemeBean);
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            ImageDownloader downloader = new ImageDownloader(path, imageUrls, imageThemeBean.getTitle());
-            downloader.setSid(imageThemeBean.getSid());
-
-            logger.info(String.format("下载器 [%s] 开始下载.", downloader.getName()));
-            downloader.download();
-            logger.info(String.format("下载器 [%s] 结束下载.", downloader.getName()));
-
-            AbstractBeanRecord record = new ImageThemeBeanRecord(imageThemeBean);
-            DBThreadManager.saveRecord(record);
-
+        Checkable checkor = CheckManager.generateCheckor(imageThemeBean.getSid(), CheckManager.CheckType.IMAGETHEME);
+        if (CheckManager.check(checkor)) {
+            logger.info(String.format("图片主题 [%s] 已存在，不进行下载.", imageThemeBean.getTitle()));
             int count = ImageDownloader.leftImageThemeCount.getAndDecrement();
             logger.info(String.format("剩余未下载图片主题数: [%d]", count - 1));
+            return;
         }
 
-        logger.info(String.format("Thread: %s 退出.", Thread.currentThread().getName()));
+        String path = StringUtils.EMPTY;
+        if (path.endsWith(File.separator)) {
+            path = this.path + imageThemeBean.getTitle();
+        }
+        else {
+            path = this.path + File.separator + imageThemeBean.getTitle();
+        }
+
+        File file = new File(path);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+
+        List<String> imageUrls = Lists.newArrayList();
+        try {
+            imageUrls = getImageUrls();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ImageDownloader downloader = new ImageDownloader(path, imageUrls, imageThemeBean.getTitle());
+        downloader.setSid(imageThemeBean.getSid());
+
+        logger.info(String.format("下载器 [%s] 开始下载.", downloader.getName()));
+        downloader.download();
+        logger.info(String.format("下载器 [%s] 结束下载.", downloader.getName()));
+
+        AbstractBeanRecord record = new ImageThemeBeanRecord(imageThemeBean);
+        DBExecutorServiceManager.saveRecord(record);
+
+        int count = ImageDownloader.leftImageThemeCount.getAndDecrement();
+        logger.info(String.format("剩余未下载图片主题数: [%d]", count - 1));
     }
 
     private List<String> getImageUrls(String url) {

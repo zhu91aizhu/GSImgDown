@@ -1,7 +1,7 @@
 package com.jpycrgo.gsimgdown.baseapi.net;
 
+import com.jpycrgo.gsimgdown.baseapi.db.DBExecutorServiceManager;
 import com.jpycrgo.gsimgdown.baseapi.db.bean.AbstractRecord;
-import com.jpycrgo.gsimgdown.baseapi.db.DBThreadManager;
 import com.jpycrgo.gsimgdown.baseapi.db.bean.ImageBeanRecord;
 import com.jpycrgo.gsimgdown.bean.ImageBean;
 import com.jpycrgo.gsimgdown.manager.CheckManager;
@@ -107,7 +107,7 @@ public class ImageDownloader {
 
                 ImageBean imageBean = new ImageBean(sid, url);
                 AbstractRecord record = new ImageBeanRecord(imageBean);
-                DBThreadManager.saveRecord(record);
+                DBExecutorServiceManager.saveRecord(record);
             }
             catch (IOException e) {
                 logger.error(String.format("下载图片 [%s] 失败.%s[%s]",

@@ -1,4 +1,4 @@
-package com.jpycrgo.gsimgdown;
+package com.jpycrgo.gsimgdown.utils;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -8,15 +8,9 @@ import java.util.concurrent.TimeUnit;
  * @date 2016/7/21
  * @since 1.0.0
  */
-public class ImageDownloadThreadPool {
+public class ExecutorServiceUtils {
 
-    private ExecutorService service;
-
-    public ImageDownloadThreadPool(ExecutorService service) {
-        this.service = service;
-    }
-
-    public void awaitTermination() throws InterruptedException {
+    public static void awaitTermination(ExecutorService service) throws InterruptedException {
         while(!service.isTerminated()) {
             boolean termination = service.awaitTermination(60, TimeUnit.SECONDS);
             if (termination) {

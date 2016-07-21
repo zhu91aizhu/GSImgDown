@@ -1,7 +1,7 @@
 package com.jpycrgo.gsimgdown;
 
 /**
- * ´úÀíÉèÖÃÀà
+ * ä»£ç†è®¾ç½®ç±»
  * @author mengzx
  * @date 2016/4/28
  * @since 1.0.0

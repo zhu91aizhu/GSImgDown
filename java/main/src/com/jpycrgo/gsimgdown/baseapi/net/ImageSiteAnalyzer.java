@@ -1,6 +1,7 @@
 package com.jpycrgo.gsimgdown.baseapi.net;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 import com.jpycrgo.gsimgdown.bean.ImageThemeBean;
 import com.jpycrgo.gsimgdown.bean.JsonParamBean;
@@ -22,10 +23,9 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author mengzx
@@ -54,8 +54,8 @@ public class ImageSiteAnalyzer {
         endPageIndex = pageTotal;
     }
 
-    public BlockingQueue<ImageThemeBean> analysis() throws Exception {
-        BlockingQueue<ImageThemeBean> imageThemeSetBeans = new LinkedBlockingQueue<>();
+    public List<ImageThemeBean> analysis() throws Exception {
+        List<ImageThemeBean> imageThemeSetBeans = Lists.newArrayList();
         JsonParamBean jsonParamBean = new JsonParamBean();
         for (int i = beginPageIndex; i < endPageIndex; i++) {
             int pageIndex = i + 1;
