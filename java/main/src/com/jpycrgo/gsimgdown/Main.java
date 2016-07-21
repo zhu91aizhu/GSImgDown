@@ -1,5 +1,6 @@
 package com.jpycrgo.gsimgdown;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.jpycrgo.gsimgdown.baseapi.db.DBThreadManager;
 import com.jpycrgo.gsimgdown.baseapi.net.ImageDownloader;
 import com.jpycrgo.gsimgdown.baseapi.net.ImageSiteAnalyzer;
@@ -17,8 +18,9 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 /**
  * @author mengzx
@@ -39,7 +41,7 @@ public class Main {
         }
     }
 
-    private static final Logger logger = LogManager.getLogger(Main.class);
+    private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) throws Exception {
         ImageSiteAnalyzer analyzer = new ImageSiteAnalyzer("http://www.gamersky.com/ent/wp/");
@@ -47,12 +49,12 @@ public class Main {
         int beginPageIndex = PropertiesUtils.getIntProperty("begin-page-index");
         int endPageIndex = PropertiesUtils.getIntProperty("end-page-index", pageTotal);
         if (beginPageIndex > endPageIndex) {
-            logger.error("开始页数或结束页数参数配置有误.");
+            Main.LOGGER.error("开始页数或结束页数参数配置有误.");
             System.exit(1);
         }
 
-        logger.info("下载开始页数：" + beginPageIndex);
-        logger.info("下载结束页数：" + endPageIndex);
+        Main.LOGGER.info("下载开始页数：" + beginPageIndex);
+        Main.LOGGER.info("下载结束页数：" + endPageIndex);
 
         analyzer.setBeginPageIndex(beginPageIndex);
         analyzer.setEndPageIndex(endPageIndex);
@@ -64,26 +66,22 @@ public class Main {
         DBManager.initDataBase();
         DBThreadManager.activateRecordThread();
 
-        ImageDownloadTask thread = new ImageDownloadTask(imageThemeSetBeans, PropertiesUtils.getProperty("save_img_path"));
         int threadCount = PropertiesUtils.getIntProperty("download-thread-count", ConstantsUtils.DEFAULT_DOWNLOADTHREAD_COUNT);
+        Main.LOGGER.info("开启下载线程数： " + threadCount);
 
-        logger.info("开启下载线程数： " + threadCount);
+        final ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("IMAGE-DOWNLOADER-%d").build();
+        final ExecutorService service = Executors.newFixedThreadPool(threadCount, threadFactory);
+        ImageDownloadTask task = new ImageDownloadTask(imageThemeSetBeans, PropertiesUtils.getProperty("save_img_path"));
+        IntStream.range(0, threadCount).parallel().forEach(i -> service.submit(task));
+        service.shutdown();
 
-        Thread[] threads = new Thread[threadCount];
-        for (int i=0; i<threadCount; i++) {
-            threads[i] = new Thread(thread);
-            threads[i].setName("IMAGE-DOWNLOADER-" + i);
-            threads[i].start();
-        }
-
-        for(int i=0; i<threadCount; i++) {
-            threads[i].join();
-        }
+        ImageDownloadThreadPool pool = new ImageDownloadThreadPool(service);
+        pool.awaitTermination();
 
         DBThreadManager.interruptRecordThread();
         DBThreadManager.joinRecordThread();
 
-        logger.info("任务执行完成，程序正在退出.");
+        Main.LOGGER.info("任务执行完成，程序正在退出.");
         System.exit(0);
     }
 
