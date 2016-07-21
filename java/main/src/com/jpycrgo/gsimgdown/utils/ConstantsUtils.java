@@ -14,7 +14,7 @@ public class ConstantsUtils {
     private static final String PROXY_TYPE = "http";
     public static final ProxyConfig PROXY_CONFIG;
 
-    public static final int DEFAULT_DOWNLOADTHREAD_COUNT = 4;
+    public static final int DEFAULT_DOWNLOADTHREAD_COUNT = Runtime.getRuntime().availableProcessors();
 
     public static final String DEFAULT_CHECK_TYPE = "file";
 
