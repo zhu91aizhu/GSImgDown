@@ -47,6 +47,8 @@ public class Main {
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) throws Exception {
+        final long beginTime = System.currentTimeMillis();
+
         ImageSiteAnalyzer analyzer = new ImageSiteAnalyzer("http://www.gamersky.com/ent/wp/");
         int pageTotal = analyzer.getPageTotal();
         int beginPageIndex = PropertiesUtils.getIntProperty("begin-page-index");
@@ -85,6 +87,7 @@ public class Main {
         DBExecutorServiceManager.shutdown();
         DBExecutorServiceManager.awaitTermination();
 
+        Main.LOGGER.info("本次运行时间: " + (System.currentTimeMillis() - beginTime));
         Main.LOGGER.info("任务执行完成，程序正在退出.");
         System.exit(0);
     }
