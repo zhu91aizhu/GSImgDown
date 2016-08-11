@@ -12,7 +12,7 @@ public class ExecutorServiceUtils {
 
     public static void awaitTermination(ExecutorService service) throws InterruptedException {
         while(!service.isTerminated()) {
-            boolean termination = service.awaitTermination(60, TimeUnit.SECONDS);
+            boolean termination = service.awaitTermination(5, TimeUnit.SECONDS);
             if (termination) {
                 break;
             }
