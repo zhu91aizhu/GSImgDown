@@ -20,19 +20,22 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * @author mengzx
  * @date 2016/4/29
  * @since 1.0.0
  */
-public class ImageDownloadTask implements Runnable {
+public class ImageDownloadTask implements Callable<Long> {
 
     private ImageThemeBean imageThemeBean;
 
     private String path;
 
     private static final Logger logger = LogManager.getLogger(ImageDownloadTask.class);
+
+    private long fileTotalByteSize = 0;
 
     public ImageDownloadTask(ImageThemeBean imageThemeBean, String path) {
         this.imageThemeBean = imageThemeBean;
@@ -65,12 +68,12 @@ public class ImageDownloadTask implements Runnable {
     }
 
     @Override
-    public void run() {
+    public Long call() {
         if (CheckManager.check(imageThemeBean.getSid(), CheckManager.CheckType.IMAGETHEME)) {
             logger.info(String.format("图片主题 [%s] 已存在，不进行下载.", imageThemeBean.getTitle()));
             int count = ImageDownloader.leftImageThemeCount.getAndDecrement();
             logger.info(String.format("剩余未下载图片主题数: [%d]", count - 1));
-            return;
+            return 0L;
         }
 
         String path = StringUtils.EMPTY;
@@ -99,6 +102,9 @@ public class ImageDownloadTask implements Runnable {
 
         logger.info(String.format("下载器 [%s] 开始下载.", downloader.getName()));
         downloader.download();
+        long downloadFileByteSize = downloader.getDownloadFileByteSize();
+        logger.info(String.format("下载器 [%s] 共下载 [%d] byte 数据.", downloader.getName(), downloadFileByteSize));
+        fileTotalByteSize += downloadFileByteSize;
         logger.info(String.format("下载器 [%s] 结束下载.", downloader.getName()));
 
         AbstractBeanRecord record = new ImageThemeBeanRecord(imageThemeBean);
@@ -106,6 +112,8 @@ public class ImageDownloadTask implements Runnable {
 
         int count = ImageDownloader.leftImageThemeCount.getAndDecrement();
         logger.info(String.format("剩余未下载图片主题数: [%d]", count - 1));
+
+        return fileTotalByteSize;
     }
 
     private List<String> getImageUrls(String url) {

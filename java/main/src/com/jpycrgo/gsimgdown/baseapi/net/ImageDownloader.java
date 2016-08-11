@@ -5,7 +5,6 @@ import com.jpycrgo.gsimgdown.baseapi.db.bean.AbstractRecord;
 import com.jpycrgo.gsimgdown.baseapi.db.bean.ImageBeanRecord;
 import com.jpycrgo.gsimgdown.bean.ImageBean;
 import com.jpycrgo.gsimgdown.manager.CheckManager;
-import com.jpycrgo.gsimgdown.manager.Checkable;
 import com.jpycrgo.gsimgdown.utils.HttpClientUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -42,6 +41,11 @@ public class ImageDownloader {
     private String sid = StringUtils.EMPTY;
 
     private static final Logger logger = LogManager.getLogger(ImageDownloader.class);
+
+    /**
+     * 下载的文件总字节数
+     */
+    private long downloadFileByteSize = 0;
 
     public ImageDownloader(String path, List<String> imageurls, String name) {
         this.path = path;
@@ -97,7 +101,8 @@ public class ImageDownloader {
 
                 try (InputStream is = entity.getContent();
                        FileOutputStream os = new FileOutputStream(new File(filename))) {
-                    IOUtils.copy(is, os);
+                    int byteSize = IOUtils.copy(is, os);
+                    downloadFileByteSize += byteSize;
                     os.flush();
                 }
 
@@ -125,5 +130,9 @@ public class ImageDownloader {
 
     public void setSid(String sid) {
         this.sid = sid;
+    }
+
+    public long getDownloadFileByteSize() {
+        return downloadFileByteSize;
     }
 }

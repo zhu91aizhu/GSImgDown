@@ -1,5 +1,6 @@
 package com.jpycrgo.gsimgdown;
 
+import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.jpycrgo.gsimgdown.baseapi.db.DBExecutorServiceManager;
 import com.jpycrgo.gsimgdown.baseapi.net.ImageDownloader;
@@ -20,9 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -76,18 +75,26 @@ public class Main {
         final ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("IMAGE-DOWNLOADER-%d").build();
         final ExecutorService service = Executors.newFixedThreadPool(threadCount, threadFactory);
 
+        List<Future<Long>> futures = Lists.newArrayList();
         imageThemeSetBeans.forEach(bean -> {
             ImageDownloadTask task = new ImageDownloadTask(bean, PropertiesUtils.getProperty("save_img_path"));
-            service.submit(task);
+            Future<Long> future = service.submit(task);
+            futures.add(future);
         });
         service.shutdown();
 
-        ExecutorServiceUtils.awaitTermination(service);
+        long fileTotalByteSize = 0L;
+        for (Future<Long> future : futures) {
+            fileTotalByteSize += future.get();
+        }
+
+//        ExecutorServiceUtils.awaitTermination(service);
 
         DBExecutorServiceManager.shutdown();
         DBExecutorServiceManager.awaitTermination();
 
         Main.LOGGER.info("本次运行时间: " + (System.currentTimeMillis() - beginTime) + " ms");
+        Main.LOGGER.info("本次共下载：" + fileTotalByteSize + " byte");
         Main.LOGGER.info("任务执行完成，程序正在退出.");
         System.exit(0);
     }
