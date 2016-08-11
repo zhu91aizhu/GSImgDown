@@ -4,6 +4,8 @@ import com.jpycrgo.gsimgdown.baseapi.db.bean.AbstractRecord;
 import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -76,25 +78,18 @@ public class DBHelper {
      */
     public static boolean isExistsImage(Connection conn, String imgURL) {
         QueryRunner runner = new QueryRunner();
-        String sql = "SELECT COUNT(IMAGEID) AS IMAGE_COUNT FROM IMAGE WHERE URL=?";
+        String sql = "SELECT COUNT(IMAGEID) > 0 FROM IMAGE WHERE URL=?";
         Object[] params = new Object[]{imgURL};
-        Boolean exists = false;
 
         try {
-            exists = runner.query(conn, sql, rs -> {
-                int count = 0;
-                if (rs.next()) {
-                    count = rs.getInt("IMAGE_COUNT");
-                }
-
-                return count > 0 ? true : false;
-            }, params);
+            int count = runner.query(conn, sql, new ScalarHandler<>(), params);
+            return count > 0 ? true : false;
         }
-        catch (SQLException e) {
+        catch (SQLException | ClassCastException e) {
             logger.error(String.format("查询 [%s] 记录失败，message： %s", imgURL, e.getMessage()));
         }
 
-        return exists;
+        return false;
     }
 
     /**
@@ -105,23 +100,16 @@ public class DBHelper {
         QueryRunner runner = new QueryRunner();
         String sql = "SELECT COUNT(SID) AS SID_COUNT FROM IMAGE_THEME WHERE SID=?";
         Object[] params = new Object[]{sid};
-        boolean exists = false;
 
         try {
-            exists = runner.query(conn, sql, rs -> {
-                int count = 0;
-                if (rs.next()) {
-                    count = rs.getInt("SID_COUNT");
-                }
-
-                return count > 0 ? true : false;
-            }, params);
+            int count = runner.query(conn, sql, new ScalarHandler<>(), params);
+            return count > 0 ? true : false;
         }
-        catch (SQLException e) {
+        catch (SQLException | ClassCastException e) {
             logger.error(String.format("查询 [%s] 记录失败，message： %s", sid, e.getMessage()));
         }
 
-        return exists;
+        return false;
     }
 
     /**
