@@ -66,8 +66,7 @@ public class ImageDownloadTask implements Runnable {
 
     @Override
     public void run() {
-        Checkable checkor = CheckManager.generateCheckor(imageThemeBean.getSid(), CheckManager.CheckType.IMAGETHEME);
-        if (CheckManager.check(checkor)) {
+        if (CheckManager.check(imageThemeBean.getSid(), CheckManager.CheckType.IMAGETHEME)) {
             logger.info(String.format("图片主题 [%s] 已存在，不进行下载.", imageThemeBean.getTitle()));
             int count = ImageDownloader.leftImageThemeCount.getAndDecrement();
             logger.info(String.format("剩余未下载图片主题数: [%d]", count - 1));

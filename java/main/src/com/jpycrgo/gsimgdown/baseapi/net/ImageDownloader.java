@@ -53,8 +53,7 @@ public class ImageDownloader {
         int size = imageurls.size();
         for (int i=0; i<size; i++) {
             String url = imageurls.get(i);
-            Checkable checkor = CheckManager.generateCheckor(url, CheckManager.CheckType.IMAGE);
-            if (CheckManager.check(checkor)) {
+            if (CheckManager.check(url, CheckManager.CheckType.IMAGE)) {
                 logger.info(String.format("图片 [%s] 已存在，不进行下载.", url));
                 continue;
             }
@@ -68,8 +67,7 @@ public class ImageDownloader {
                 filename = path + File.separator + url.substring(pos + 1);
             }
 
-            checkor = CheckManager.generateCheckor(filename, CheckManager.CheckType.FILE);
-            if (CheckManager.check(checkor)) {
+            if (CheckManager.check(filename, CheckManager.CheckType.FILE)) {
                 int index = filename.lastIndexOf(File.separator);
                 logger.info(String.format("图片 [%s] 已存在，不进行下载.", filename.substring(index + 1)));
                 continue;
