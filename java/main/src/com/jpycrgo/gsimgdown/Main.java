@@ -9,8 +9,8 @@ import com.jpycrgo.gsimgdown.bean.ImageThemeBean;
 import com.jpycrgo.gsimgdown.manager.CheckManager;
 import com.jpycrgo.gsimgdown.manager.DBManager;
 import com.jpycrgo.gsimgdown.utils.ConstantsUtils;
-import com.jpycrgo.gsimgdown.utils.ExecutorServiceUtils;
 import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -20,8 +20,12 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -88,15 +92,38 @@ public class Main {
             fileTotalByteSize += future.get();
         }
 
-//        ExecutorServiceUtils.awaitTermination(service);
-
         DBExecutorServiceManager.shutdown();
         DBExecutorServiceManager.awaitTermination();
 
-        Main.LOGGER.info("本次运行时间: " + (System.currentTimeMillis() - beginTime) + " ms");
-        Main.LOGGER.info("本次共下载：" + fileTotalByteSize + " byte");
+        long runningTime = System.currentTimeMillis() - beginTime;
+        Main.LOGGER.info("本次运行时间: " + runningTime + " ms");
+
+        Main.LOGGER.info("本次共下载：" + FileUtils.byteCountToDisplaySize(fileTotalByteSize));
+        Main.LOGGER.info("本次下载速度：" + getDownloadSpeed(runningTime, fileTotalByteSize));
         Main.LOGGER.info("任务执行完成，程序正在退出.");
         System.exit(0);
+    }
+
+    private static String getDownloadSpeed(long runningTime, long bytes) {
+        // 计算每秒的速度
+        long speed = bytes * 1000 / runningTime;
+        BigInteger size = BigInteger.valueOf(speed);
+        String displaySpeed = "";
+
+        if (size.divide(FileUtils.ONE_GB_BI).compareTo(BigInteger.ZERO) > 0) {
+            displaySpeed = String.format("%.2f GB", size.doubleValue() / FileUtils.ONE_GB_BI.longValue());
+        }
+        else if (size.divide(FileUtils.ONE_MB_BI).compareTo(BigInteger.ZERO) > 0) {
+            displaySpeed = String.format("%.2f MB", size.doubleValue() / FileUtils.ONE_MB_BI.longValue());
+        }
+        else if (size.divide(FileUtils.ONE_KB_BI).compareTo(BigInteger.ZERO) > 0) {
+            displaySpeed = String.format("%.2f KB", size.doubleValue() / FileUtils.ONE_KB_BI.longValue());
+        }
+        else {
+            displaySpeed = String.valueOf(size) + " byte";
+        }
+
+        return displaySpeed + "/S";
     }
 
 }
