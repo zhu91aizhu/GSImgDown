@@ -8,6 +8,8 @@ import com.jpycrgo.gsimgdown.bean.JsonParamBean;
 import com.jpycrgo.gsimgdown.bean.SiteOverviewBean;
 import com.jpycrgo.gsimgdown.utils.DocumentUtils;
 import com.jpycrgo.gsimgdown.utils.HttpClientUtils;
+import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -96,8 +98,11 @@ public class ImageSiteAnalyzer {
     private static Document getImageThemeSet(JsonParamBean jsonParamBean) throws Exception {
         // 创建Get方法实例
         HttpGet httpGet = new HttpGet(BASE_URL + jsonParamBean.parseParams());
-        RequestConfig config = HttpClientUtils.getProxyRequestConfig();
-        httpGet.setConfig(config);
+        // 是否开启代理
+        boolean proxyEnable = BooleanUtils.toBoolean(PropertiesUtils.getProperty("proxy-enable", "false"));
+        if (proxyEnable) {
+            httpGet.setConfig(HttpClientUtils.getProxyRequestConfig());
+        }
 
         // 创建HttpClient实例
         HttpClient httpclient = HttpClientUtils.getHttpClient();

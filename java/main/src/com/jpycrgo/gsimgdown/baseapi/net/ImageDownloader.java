@@ -6,11 +6,14 @@ import com.jpycrgo.gsimgdown.baseapi.db.bean.ImageBeanRecord;
 import com.jpycrgo.gsimgdown.bean.ImageBean;
 import com.jpycrgo.gsimgdown.manager.CheckManager;
 import com.jpycrgo.gsimgdown.utils.HttpClientUtils;
+import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -81,7 +84,11 @@ public class ImageDownloader {
             HttpGet httpGet = null;
             try {
                 httpGet = new HttpGet(url);
-                httpGet.setConfig(HttpClientUtils.getProxyRequestConfig());
+                // 是否开启代理
+                boolean proxyEnable = BooleanUtils.toBoolean(PropertiesUtils.getProperty("proxy-enable", "false"));
+                if (proxyEnable) {
+                    httpGet.setConfig(HttpClientUtils.getProxyRequestConfig());
+                }
             }
             catch (Exception e) {
                 logger.error(String.format("url 错误: [%s]%s[%s]",

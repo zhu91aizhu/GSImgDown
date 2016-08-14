@@ -1,5 +1,7 @@
 package com.jpycrgo.gsimgdown.utils;
 
+import com.google.common.collect.Maps;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -29,8 +31,12 @@ public class DocumentUtils {
         HttpClient httpclient = HttpClientUtils.getHttpClient();
         // 创建Get方法实例
         HttpGet httpGet = new HttpGet(url);
-        RequestConfig config = HttpClientUtils.getProxyRequestConfig();
-        httpGet.setConfig(config);
+
+        // 是否开启代理
+        boolean proxyEnable = BooleanUtils.toBoolean(PropertiesUtils.getProperty("proxy-enable", "false"));
+        if (proxyEnable) {
+            httpGet.setConfig(HttpClientUtils.getProxyRequestConfig());
+        }
 
         Document document = null;
         HttpResponse httpResponse = httpclient.execute(httpGet);
