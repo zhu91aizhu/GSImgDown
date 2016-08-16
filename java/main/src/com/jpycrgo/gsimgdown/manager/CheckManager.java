@@ -1,5 +1,6 @@
 package com.jpycrgo.gsimgdown.manager;
 
+import java.util.function.Function;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -9,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class CheckManager {
 
-    private static CheckType CHECKOR_TYPE;
+    private static CheckType CHECKOR_TYPE = CheckType.NO;
 
     /**
      * 设置检验类型
@@ -29,7 +30,7 @@ public class CheckManager {
         }
 
         if (StringUtils.equals(checktype, "imagetheme")) {
-            CHECKOR_TYPE = CheckType.IMAGETHEME;
+            CHECKOR_TYPE = CheckType.IMAGE_THEME;
         }
     }
 
@@ -41,11 +42,7 @@ public class CheckManager {
      */
     public static boolean check(String param, CheckManager.CheckType checkType) {
         Checkable checkor = generateCheckor(param, checkType);
-        if (checkor == null) {
-            return false;
-        }
-
-        return checkor.check();
+        return checkor != null && checkor.check();
     }
 
     /**
@@ -55,26 +52,11 @@ public class CheckManager {
      * @return 检验器
      */
     private static Checkable generateCheckor(String param, CheckManager.CheckType checkType) {
-        if (!checkType.equals(CHECKOR_TYPE)) {
+        if (checkType == null || !CHECKOR_TYPE.equals(checkType)) {
             return null;
         }
 
-        Checkable checkor = null;
-        switch (checkType) {
-            case NO:
-                checkor = null;
-                break;
-            case FILE:
-                checkor = new FileCheckor(param);
-                break;
-            case IMAGE:
-                checkor = new ImageCheckor(param);
-                break;
-            case IMAGETHEME:
-                checkor = new ImageThemeCheckor(param);
-                break;
-        }
-
+        Checkable checkor = checkType.generateCheckor(param);
         return checkor;
     }
 
@@ -82,7 +64,20 @@ public class CheckManager {
      * 检验类型
      */
     public enum CheckType {
-        NO, FILE, IMAGE, IMAGETHEME
+        NO(param -> null),
+        FILE(param -> new FileCheckor(param)),
+        IMAGE(param -> new ImageCheckor(param)),
+        IMAGE_THEME(param -> new ImageThemeCheckor(param));
+
+        private Function<String, ? extends Checkable> func;
+
+        CheckType(Function<String, ? extends Checkable> func) {
+            this.func = func;
+        }
+
+        public Checkable generateCheckor(String param) {
+            return func.apply(param);
+        }
     }
 
 }

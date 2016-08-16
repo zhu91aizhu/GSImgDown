@@ -7,7 +7,6 @@ import com.jpycrgo.gsimgdown.baseapi.db.bean.ImageThemeBeanRecord;
 import com.jpycrgo.gsimgdown.baseapi.net.ImageDownloader;
 import com.jpycrgo.gsimgdown.bean.ImageThemeBean;
 import com.jpycrgo.gsimgdown.manager.CheckManager;
-import com.jpycrgo.gsimgdown.manager.Checkable;
 import com.jpycrgo.gsimgdown.utils.DocumentUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -69,7 +68,7 @@ public class ImageDownloadTask implements Callable<Long> {
 
     @Override
     public Long call() {
-        if (CheckManager.check(imageThemeBean.getSid(), CheckManager.CheckType.IMAGETHEME)) {
+        if (CheckManager.check(imageThemeBean.getSid(), CheckManager.CheckType.IMAGE_THEME)) {
             logger.info(String.format("图片主题 [%s] 已存在，不进行下载.", imageThemeBean.getTitle()));
             int count = ImageDownloader.leftImageThemeCount.getAndDecrement();
             logger.info(String.format("剩余未下载图片主题数: [%d]", count - 1));
