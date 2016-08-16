@@ -16,10 +16,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -36,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Main {
 
     static {
-        File file = new File("conf/log4j.xml");
+        File file = new File(System.getProperty("user.dir"), "conf/log4j.xml");
         try {
             BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
             final ConfigurationSource source = new ConfigurationSource(in);
