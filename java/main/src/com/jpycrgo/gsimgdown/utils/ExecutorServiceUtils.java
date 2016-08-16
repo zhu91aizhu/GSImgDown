@@ -1,5 +1,7 @@
 package com.jpycrgo.gsimgdown.utils;
 
+import com.google.common.base.Preconditions;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -11,6 +13,8 @@ import java.util.concurrent.TimeUnit;
 public class ExecutorServiceUtils {
 
     public static void awaitTermination(ExecutorService service) throws InterruptedException {
+        Preconditions.checkNotNull(service, "executor service is null.");
+
         while(!service.isTerminated()) {
             boolean termination = service.awaitTermination(5, TimeUnit.SECONDS);
             if (termination) {

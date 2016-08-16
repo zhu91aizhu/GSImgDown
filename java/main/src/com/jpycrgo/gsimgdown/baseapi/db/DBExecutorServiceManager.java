@@ -35,6 +35,10 @@ public class DBExecutorServiceManager {
      * @param record 记录
      */
     public static void saveRecord(AbstractRecord record) {
+        if (record == null) {
+            return;
+        }
+
         SaveRecordDBTask task = new SaveRecordDBTask(record);
         service.submit(task);
     }

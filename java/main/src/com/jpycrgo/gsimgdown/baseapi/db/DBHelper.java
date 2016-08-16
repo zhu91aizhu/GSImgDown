@@ -1,5 +1,6 @@
 package com.jpycrgo.gsimgdown.baseapi.db;
 
+import com.google.common.base.Preconditions;
 import com.jpycrgo.gsimgdown.baseapi.db.bean.AbstractRecord;
 import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
 import org.apache.commons.dbutils.DbUtils;
@@ -46,6 +47,8 @@ public class DBHelper {
      * 初始化数据库，如果数据库文件不存在则创建
      */
     public static void initDataBase(Connection conn) {
+        Preconditions.checkNotNull(conn, "connection is null.");
+
         QueryRunner runner = new QueryRunner();
         File scriptFiles = new File("scripts/");
         File[] sqlFiles = scriptFiles.listFiles((dir, name) -> {
@@ -77,6 +80,8 @@ public class DBHelper {
      * @since 1.0.2
      */
     public static boolean isExistsImage(Connection conn, String imgURL) {
+        Preconditions.checkNotNull(conn, "connection is null.");
+
         QueryRunner runner = new QueryRunner();
         String sql = "SELECT COUNT(IMAGEID) > 0 FROM IMAGE WHERE URL=?";
         Object[] params = new Object[]{imgURL};
@@ -97,6 +102,8 @@ public class DBHelper {
      * @since 1.0.2
      */
     public static boolean isExistsImageTheme(Connection conn, String sid) {
+        Preconditions.checkNotNull(conn, "connection is null.");
+
         QueryRunner runner = new QueryRunner();
         String sql = "SELECT COUNT(SID) AS SID_COUNT FROM IMAGE_THEME WHERE SID=?";
         Object[] params = new Object[]{sid};
@@ -116,6 +123,9 @@ public class DBHelper {
      * @since 1.0.1
      */
     public static boolean insertRecord(Connection conn, AbstractRecord record) {
+        Preconditions.checkNotNull(conn, "connection is null.");
+        Preconditions.checkNotNull(record, "record is null.");
+
         QueryRunner runner = new QueryRunner();
         String sql = record.generateSQL();
         Object[] params = record.getParams();

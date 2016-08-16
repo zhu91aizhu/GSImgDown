@@ -1,5 +1,6 @@
 package com.jpycrgo.gsimgdown.baseapi.net;
 
+import com.google.common.base.Preconditions;
 import com.jpycrgo.gsimgdown.baseapi.db.DBExecutorServiceManager;
 import com.jpycrgo.gsimgdown.baseapi.db.bean.AbstractRecord;
 import com.jpycrgo.gsimgdown.baseapi.db.bean.ImageBeanRecord;
@@ -13,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,6 +51,9 @@ public class ImageDownloader {
     private long downloadFileByteSize = 0;
 
     public ImageDownloader(String path, List<String> imageurls, String name) {
+        Preconditions.checkArgument(StringUtils.isNotBlank(path), "path is blank or null.");
+        Preconditions.checkNotNull(imageurls, "image url list is null.");
+
         this.path = path;
         this.imageurls = imageurls;
         this.name = name;

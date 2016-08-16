@@ -1,5 +1,6 @@
 package com.jpycrgo.gsimgdown.utils;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,9 +24,7 @@ public class DocumentUtils {
 
 
     public static Document getUrlDocument(String url) throws IOException {
-        if (StringUtils.isBlank(url)) {
-            throw new IllegalArgumentException("url is blank");
-        }
+        Preconditions.checkArgument(StringUtils.isNotBlank(url), "url 为空");
 
         // 创建HttpClient实例
         HttpClient httpclient = HttpClientUtils.getHttpClient();
