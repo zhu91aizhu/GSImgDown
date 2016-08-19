@@ -16,7 +16,7 @@ public class ConstantsUtils {
 
     public static final int DEFAULT_DOWNLOADTHREAD_COUNT = Runtime.getRuntime().availableProcessors();
 
-    public static final String DEFAULT_CHECK_TYPE = "file";
+    public static final String DEFAULT_CHECK_TYPE = "FILE";
 
     private static final String BASE_URL = "http://db2.gamersky.com/LabelJsonpAjax.aspx?jsondata=";
 

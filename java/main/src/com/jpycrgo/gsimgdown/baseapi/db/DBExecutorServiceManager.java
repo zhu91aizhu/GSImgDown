@@ -2,8 +2,8 @@ package com.jpycrgo.gsimgdown.baseapi.db;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.jpycrgo.gsimgdown.baseapi.db.bean.AbstractRecord;
+import com.jpycrgo.gsimgdown.utils.AppSetting;
 import com.jpycrgo.gsimgdown.utils.ExecutorServiceUtils;
-import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,7 +46,7 @@ public class DBExecutorServiceManager {
     public static Connection getConnection() {
         if (CONN == null) {
             try {
-                CONN = DriverManager.getConnection(PropertiesUtils.getProperty("database_url"));
+                CONN = DriverManager.getConnection(AppSetting.getDatabaseURL());
             }
             catch (SQLException e) {
                 LOGGER.error("获取连接失败.");

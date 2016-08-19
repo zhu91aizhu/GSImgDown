@@ -2,10 +2,9 @@ package com.jpycrgo.gsimgdown.baseapi.db;
 
 import com.google.common.base.Preconditions;
 import com.jpycrgo.gsimgdown.baseapi.db.bean.AbstractRecord;
-import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
+import com.jpycrgo.gsimgdown.utils.AppSetting;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -33,7 +32,7 @@ public class DBHelper {
     public static void loadDriverAndInitDBPath() {
         DbUtils.loadDriver("org.sqlite.JDBC");
 
-        String dbURL = PropertiesUtils.getProperty("database_url");
+        String dbURL = AppSetting.getDatabaseURL();
         int lastIndex = dbURL.lastIndexOf(":");
         String dbFilePath = dbURL.substring(lastIndex + 1);
         File dbFile = new File(dbFilePath);

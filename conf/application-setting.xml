@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+    <!-- 数据库 URL -->
+    <database>jdbc:sqlite:db/app.db</database>
+
+    <!-- 保存路径 -->
+    <save-path>/home/jpycrgo/</save-path>
+
+    <!-- 分页设置 -->
+    <pagination>
+        <!-- 分页设置开启设置 -->
+        <enable>true</enable>
+
+        <begin>0</begin>
+        <end>1</end>
+    </pagination>
+
+    <!-- 代理设置 -->
+    <proxy-setting>
+        <!-- 代理设置开启设置 -->
+        <enable>true</enable>
+
+        <!-- 代理服务器列表 -->
+        <proxy-hosts>
+            <proxy-host>
+                <host>isadz.hold.founder.com</host>
+                <port>80</port>
+                <!--<username></username>-->
+                <!--<password></password>-->
+            </proxy-host>
+        </proxy-hosts>
+    </proxy-setting>
+
+    <!--
+        检查类型设置
+        NO：不进行检查
+        FILE：文件检查
+        IMAGE：图片数据库记录检查
+        IMAGE-THEME：图片主题数据库记录检查
+     -->
+    <check-setting>NO</check-setting>
+
+    <!-- 下载线程数量 -->
+    <download-thread-count>6</download-thread-count>
+</settings>

@@ -1,5 +1,6 @@
 package com.jpycrgo.gsimgdown;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.jpycrgo.gsimgdown.baseapi.db.DBExecutorServiceManager;
@@ -8,8 +9,7 @@ import com.jpycrgo.gsimgdown.baseapi.net.ImageSiteAnalyzer;
 import com.jpycrgo.gsimgdown.bean.ImageThemeBean;
 import com.jpycrgo.gsimgdown.manager.CheckManager;
 import com.jpycrgo.gsimgdown.manager.DBManager;
-import com.jpycrgo.gsimgdown.utils.ConstantsUtils;
-import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
+import com.jpycrgo.gsimgdown.utils.AppSetting;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,8 +51,15 @@ public class Main {
 
         ImageSiteAnalyzer analyzer = new ImageSiteAnalyzer("http://www.gamersky.com/ent/wp/");
         int pageTotal = analyzer.getPageTotal();
-        int beginPageIndex = PropertiesUtils.getIntProperty("begin-page-index");
-        int endPageIndex = PropertiesUtils.getIntProperty("end-page-index", pageTotal);
+        int beginPageIndex = 0;
+        int endPageIndex = pageTotal;
+
+        boolean enablePagination = AppSetting.isEnablePagination();
+        if (enablePagination) {
+            beginPageIndex = Optional.of(AppSetting.getBeginIndex()).get();
+            endPageIndex = Optional.of(AppSetting.getEndIndex()).get();
+        }
+
         if (beginPageIndex > endPageIndex) {
             Main.LOGGER.error("开始页数或结束页数参数配置有误.");
             System.exit(1);
@@ -67,10 +74,10 @@ public class Main {
         List<ImageThemeBean> imageThemeSetBeans = analyzer.analysis();
         ImageDownloader.leftImageThemeCount = new AtomicInteger(imageThemeSetBeans.size());
 
-        CheckManager.setCheckType(PropertiesUtils.getProperty("check-type", ConstantsUtils.DEFAULT_CHECK_TYPE));
+        CheckManager.setCheckType(AppSetting.getCheckor());
         DBManager.initDataBase();
 
-        int threadCount = PropertiesUtils.getIntProperty("download-thread-count", ConstantsUtils.DEFAULT_DOWNLOADTHREAD_COUNT);
+        int threadCount = AppSetting.getDownloadThreadCount();
         Main.LOGGER.info("开启下载线程数： " + threadCount);
 
         final ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("IMAGE-DOWNLOADER-%d").build();
@@ -78,7 +85,7 @@ public class Main {
 
         List<Future<Long>> futures = Lists.newArrayList();
         imageThemeSetBeans.forEach(bean -> {
-            ImageDownloadTask task = new ImageDownloadTask(bean, PropertiesUtils.getProperty("save_img_path"));
+            ImageDownloadTask task = new ImageDownloadTask(bean, AppSetting.getSavePath());
             Future<Long> future = service.submit(task);
             futures.add(future);
         });

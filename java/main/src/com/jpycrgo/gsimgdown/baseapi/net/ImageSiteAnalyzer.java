@@ -6,14 +6,12 @@ import com.google.common.io.CharStreams;
 import com.jpycrgo.gsimgdown.bean.ImageThemeBean;
 import com.jpycrgo.gsimgdown.bean.JsonParamBean;
 import com.jpycrgo.gsimgdown.bean.SiteOverviewBean;
+import com.jpycrgo.gsimgdown.utils.AppSetting;
 import com.jpycrgo.gsimgdown.utils.DocumentUtils;
 import com.jpycrgo.gsimgdown.utils.HttpClientUtils;
-import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -99,7 +97,7 @@ public class ImageSiteAnalyzer {
         // 创建Get方法实例
         HttpGet httpGet = new HttpGet(BASE_URL + jsonParamBean.parseParams());
         // 是否开启代理
-        boolean proxyEnable = BooleanUtils.toBoolean(PropertiesUtils.getProperty("proxy-enable", "false"));
+        boolean proxyEnable = AppSetting.isEnableProxy();
         if (proxyEnable) {
             httpGet.setConfig(HttpClientUtils.getProxyRequestConfig());
         }

@@ -6,10 +6,9 @@ import com.jpycrgo.gsimgdown.baseapi.db.bean.AbstractRecord;
 import com.jpycrgo.gsimgdown.baseapi.db.bean.ImageBeanRecord;
 import com.jpycrgo.gsimgdown.bean.ImageBean;
 import com.jpycrgo.gsimgdown.manager.CheckManager;
+import com.jpycrgo.gsimgdown.utils.AppSetting;
 import com.jpycrgo.gsimgdown.utils.HttpClientUtils;
-import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -88,7 +87,7 @@ public class ImageDownloader {
             try {
                 httpGet = new HttpGet(url);
                 // 是否开启代理
-                boolean proxyEnable = BooleanUtils.toBoolean(PropertiesUtils.getProperty("proxy-enable", "false"));
+                boolean proxyEnable = AppSetting.isEnableProxy();
                 if (proxyEnable) {
                     httpGet.setConfig(HttpClientUtils.getProxyRequestConfig());
                 }

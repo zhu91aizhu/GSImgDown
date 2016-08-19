@@ -32,7 +32,7 @@ public class DocumentUtils {
         HttpGet httpGet = new HttpGet(url);
 
         // 是否开启代理
-        boolean proxyEnable = BooleanUtils.toBoolean(PropertiesUtils.getProperty("proxy-enable", "false"));
+        boolean proxyEnable = AppSetting.isEnableProxy();
         if (proxyEnable) {
             httpGet.setConfig(HttpClientUtils.getProxyRequestConfig());
         }

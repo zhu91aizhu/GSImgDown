@@ -17,19 +17,19 @@ public class CheckManager {
      * @param checktype 检验类型
      */
     public static void setCheckType(String checktype) {
-        if (StringUtils.equals(checktype, "no")) {
+        if (StringUtils.equals(checktype, "NO")) {
             CHECKOR_TYPE = CheckType.NO;
         }
 
-        if (StringUtils.equals(checktype, "file")) {
+        if (StringUtils.equals(checktype, "FILE")) {
             CHECKOR_TYPE = CheckType.FILE;
         }
 
-        if (StringUtils.equals(checktype, "image")) {
+        if (StringUtils.equals(checktype, "IMAGE")) {
             CHECKOR_TYPE = CheckType.IMAGE;
         }
 
-        if (StringUtils.equals(checktype, "imagetheme")) {
+        if (StringUtils.equals(checktype, "IMAGE_THEME")) {
             CHECKOR_TYPE = CheckType.IMAGE_THEME;
         }
     }

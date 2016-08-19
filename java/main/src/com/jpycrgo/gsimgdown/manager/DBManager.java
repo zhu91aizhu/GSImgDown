@@ -1,7 +1,7 @@
 package com.jpycrgo.gsimgdown.manager;
 
 import com.jpycrgo.gsimgdown.baseapi.db.DBHelper;
-import com.jpycrgo.gsimgdown.utils.PropertiesUtils;
+import com.jpycrgo.gsimgdown.utils.AppSetting;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,7 +25,7 @@ public class DBManager {
 
         if (CONN == null) {
             try {
-                CONN = DriverManager.getConnection(PropertiesUtils.getProperty("database_url"));
+                CONN = DriverManager.getConnection(AppSetting.getDatabaseURL());
             }
             catch (SQLException e) {
                 LOGGER.error("获取连接失败.");
