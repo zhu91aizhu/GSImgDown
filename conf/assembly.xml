@@ -36,7 +36,7 @@
             <directory>${basedir}/conf</directory>
             <outputDirectory>conf</outputDirectory>
             <includes>
-                <include>app.properties</include>
+                <include>application-setting.xml</include>
                 <include>log4j.xml</include>
             </includes>
         </fileSet>
