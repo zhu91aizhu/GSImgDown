@@ -96,14 +96,14 @@ public class AppSetting {
      * 获取检查器类型
      */
     public static String getCheckor() {
-        return CONFIG.getString("check-setting", "NO");
+        return CONFIG.getString("check-setting", ConstantsUtils.DEFAULT_CHECK_TYPE);
     }
 
     /**
      * 获取下载线程数量
      */
     public static int getDownloadThreadCount() {
-        return CONFIG.getInt("download-thread-count", Runtime.getRuntime().availableProcessors() * 2);
+        return CONFIG.getInt("download-thread-count", ConstantsUtils.DEFAULT_DOWNLOADTHREAD_COUNT);
     }
 
 }
