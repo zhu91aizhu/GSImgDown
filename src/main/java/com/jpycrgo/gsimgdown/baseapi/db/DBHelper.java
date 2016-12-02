@@ -24,7 +24,7 @@ import java.sql.SQLException;
  */
 public class DBHelper {
 
-    private static final Logger logger = LogManager.getLogger(DBHelper.class);
+    private static final Logger logger = LogManager.getLogger("applog");
 
     /**
      * 加载数据库驱动，并且创建数据库文件所在目录

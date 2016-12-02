@@ -36,7 +36,7 @@ public class ImageSiteAnalyzer {
 
     private static final String BASE_URL = "http://db2.gamersky.com/LabelJsonpAjax.aspx?jsondata=";
 
-    private static final Logger LOGGER = LogManager.getLogger(ImageSiteAnalyzer.class);
+    private static final Logger LOGGER = LogManager.getLogger("applog");
 
     private int pageTotal;
 

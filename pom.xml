@@ -6,7 +6,7 @@
 
     <groupId>com.jpycrgo</groupId>
     <artifactId>gsimgdown</artifactId>
-    <version>1.1.4</version>
+    <version>1.2</version>
 
     <dependencies>
         <dependency>
@@ -85,6 +85,12 @@
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.8.11.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.airlift</groupId>
+            <artifactId>airline</artifactId>
+            <version>0.7</version>
         </dependency>
 
         <dependency>
