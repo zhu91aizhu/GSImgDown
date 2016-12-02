@@ -4,13 +4,26 @@
         <property name="LOG_HOME">e:\\logs</property>
     </properties>
     <appenders>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] [%-5level] [%logger{1.}] - %msg%n"/>
+        <Console name="cmdline_out" target="SYSTEM_OUT">
+            <PatternLayout pattern="%msg"/>
+        </Console>
+
+        <Console name="console" target="SYSTEM_OUT">
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] [%-5level] [%class{1.}] - %msg%n"/>
         </Console>
 
         <RollingRandomAccessFile name="info_log" fileName="${LOG_HOME}\\info.log" filePattern="${LOG_HOME}\\info.%d{yyyy-MM-dd}.log">
             <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
-            <PatternLayout pattern="[%-5p] [%t:%c{1.}] [%r] [%d{yyyy-MM-dd HH:mm:ss,SSS}] %n--- ---%msg%n"/>
+            <PatternLayout pattern="[%-5p] [%t:%class{1.}] [%r] [%d{yyyy-MM-dd HH:mm:ss,SSS}] %n--- ---%msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="debug_log" fileName="${LOG_HOME}\\debug.log" filePattern="${LOG_HOME}\\debug.%d{yyyy-MM-dd}.log">
+            <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="[%-5p] [%t:%class{1.}] [%r] [%d{yyyy-MM-dd HH:mm:ss,SSS}] %n--- ---%msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1" modulate="true" />
             </Policies>
@@ -18,7 +31,7 @@
 
         <RollingRandomAccessFile name="error_log" fileName="${LOG_HOME}\\error.log" filePattern="${LOG_HOME}\\info.%d{yyyy-MM-dd}.log">
             <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
-            <PatternLayout pattern="[%-5p] [%t:%c] [%r] [%d{yyyy-MM-dd HH:mm:ss,SSS}] %n--- ---%msg%n"/>
+            <PatternLayout pattern="[%-5p] [%t:%class{1.}] [%r] [%d{yyyy-MM-dd HH:mm:ss,SSS}] %n--- ---%msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1" modulate="true" />
             </Policies>
@@ -26,9 +39,17 @@
     </appenders>
 
     <loggers>
+        <logger name="cmdline" level="info">
+            <appender-ref ref="cmdline_out" />
+        </logger>
+
+        <logger name="applog">
+            <appender-ref ref="console"/>
+        </logger>
+
         <root level="debug">
-            <appender-ref ref="Console"/>
             <appender-ref ref="info_log"/>
+            <appender-ref ref="debug_log"/>
             <appender-ref ref="error_log"/>
         </root>
     </loggers>

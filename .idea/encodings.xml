@@ -10,6 +10,7 @@
     <file url="file://$PROJECT_DIR$/src/main/java/com/jpycrgo/gsimgdown/baseapi/db/SaveRecordDBTask.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/jpycrgo/gsimgdown/baseapi/db/bean/ImageThemeBeanRecord.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/jpycrgo/gsimgdown/baseapi/net/ImageDownloader.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/jpycrgo/gsimgdown/cmdline/Cmdline.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/jpycrgo/gsimgdown/manager/CheckManager.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/jpycrgo/gsimgdown/manager/DBManager.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/jpycrgo/gsimgdown/utils/DocumentUtils.java" charset="UTF-8" />

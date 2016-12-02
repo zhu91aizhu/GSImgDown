@@ -42,7 +42,7 @@ public class ImageDownloader {
 
     private String sid = StringUtils.EMPTY;
 
-    private static final Logger logger = LogManager.getLogger(ImageDownloader.class);
+    private static final Logger logger = LogManager.getLogger("applog");
 
     /**
      * 下载的文件总字节数

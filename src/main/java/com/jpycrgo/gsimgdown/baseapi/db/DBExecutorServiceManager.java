@@ -19,7 +19,7 @@ import java.util.concurrent.*;
  */
 public class DBExecutorServiceManager {
 
-    private static final Logger LOGGER = LogManager.getLogger(DBExecutorServiceManager.class);
+    private static final Logger LOGGER = LogManager.getLogger("applog");
 
     private static ExecutorService service;
 

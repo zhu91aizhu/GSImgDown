@@ -18,7 +18,7 @@ public class DBManager {
 
     private static Connection CONN = null;
 
-    private static final Logger LOGGER = LogManager.getLogger(DBManager.class);
+    private static final Logger LOGGER = LogManager.getLogger("applog");
 
     static {
         DBHelper.loadDriverAndInitDBPath();

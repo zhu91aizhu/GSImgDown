@@ -32,7 +32,7 @@ public class ImageDownloadTask implements Callable<Long> {
 
     private String path;
 
-    private static final Logger logger = LogManager.getLogger(ImageDownloadTask.class);
+    private static final Logger logger = LogManager.getLogger("applog");
 
     private long fileTotalByteSize = 0;
 
