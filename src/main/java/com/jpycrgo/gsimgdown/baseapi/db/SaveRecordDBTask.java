@@ -13,7 +13,7 @@ public class SaveRecordDBTask implements Runnable {
 
     private AbstractRecord record;
 
-    private static final Logger LOGGER = LogManager.getLogger(SaveRecordDBTask.class);
+    private static final Logger LOGGER = LogManager.getLogger("applog");
 
     public SaveRecordDBTask(AbstractRecord record) {
         this.record = record;
